@@ -1,0 +1,473 @@
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #1B8786; 
+    background-image: url("/images/navbar_bg.png"); 
+    background-size: auto 20.85vh; 
+    background-repeat: repeat; 
+    overflow: hidden;
+}
+
+
+/* Fonts */
+@font-face {
+    font-family: FuturaHeavy;
+    src:    url('/font/futura/FuturaLT-Heavy.woff') format('woff'),
+            url('/font/futura/FuturaLT-Heavy.ttf') format('truetype'); 
+} 
+
+@font-face {
+    font-family: FuturaBoldOblique;
+    src:    url('/font/futura/FuturaLT-BoldOblique.woff') format('woff'),
+            url('/font/futura/FuturaLT-BoldOblique.ttf') format('truetype'); 
+} 
+
+@font-face {
+    font-family: FuturaBook;
+    src:    url('/font/futura/FuturaLT-Book.woff') format('woff'),
+            url('/font/futura/FuturaLT-Book.ttf') format('truetype'); 
+} 
+
+h1 {
+    font-size: 2vh;
+    font-family: FuturaHeavy;
+    padding: 2vh;
+    margin-top: 2vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 16.85vh;
+    padding: 0 20px;
+    background-image: url('/images/navbar_bg.png');
+    background-size: auto 20.85vh; 
+    background-repeat: repeat-x; 
+    background-position: left; 
+    background-color: #1B8786; 
+}
+
+.navbar-title-subtitle {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-title {
+    color: white; 
+    font-size: 6.5vh;
+    margin-left: 8.39vw;
+    font-family: FuturaBoldOblique;
+}
+
+.navbar-subtitle {
+    color: white;
+    font-size: 2vh;
+    margin-left: 8.39vw;
+    margin-top: -1vh;
+    font-family: FuturaBook;
+}
+
+.navbar-links {
+    display: flex;
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    margin-left: 5.08vw;
+}
+
+.navbar a:last-child {
+    margin-right: 8.39vw;
+}
+
+.verification {
+    display: block;
+    height: 50vh;
+    width: 50vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #CDEAE9;
+    border-radius: 3vw;
+    padding: 1vw;
+    padding-top: 3vh;
+}
+
+.title_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #1B8786; 
+    margin-top: -1.5vh;
+}
+
+.exit, #exit {
+    display: flex;
+    justify-content: flex-end; 
+}
+
+.exit button {
+    cursor: pointer;
+    color: red;
+    font-size: 3vh;
+    font-family: FuturaHeavy;
+    background-color: rgba(0,0,0,0);
+    border: none;
+    margin-top: -2.6vh;
+    margin-right: 0.8vw;
+}
+
+.group1{
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    margin-top: 8vh;
+} 
+
+label {
+    font-family: FuturaBook;
+    color: #556363;
+    font-size: 2.5vh;
+    margin-top: 2vh;
+}
+
+#password {
+    width: 18vw;
+    padding: 0.8vh;
+    font-family: FuturaBook;
+    color: #1B8786;
+    font-size: 3vh;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #889D9D;
+    background-color: rgba(0,0,0,0);
+    margin-left: 1.8vw;
+}
+
+#visibility {
+    width: 1.8vw; 
+    height: 1.8vw; 
+    cursor: pointer;
+}
+
+#submit_verification, #export_button {
+    border-radius: 3vh;
+    font-family: FuturaBook;
+    color: #CDEAE9;
+    background-color: #1B8786;
+    font-size: 1.8vh;
+    width: 7.98vw;
+    height: 3.79vh;
+    border: none;
+    margin-top: 5vh;
+}
+
+#submit_verification:hover, #export_button:hover{
+    background-color: #125a59;
+}
+
+#export {
+    border-radius: 1vh;
+    font-family: FuturaBook;
+    color: #CDEAE9;
+    background-color: #1B8786;
+    font-size: 1.8vh;
+    width: 6.5vw;
+    height: 3.79vh;
+    border: none;
+}
+
+#export:hover{
+    background-color: #125a59;
+}
+
+.export_container {
+    display: none;
+    text-align: center;
+    height: 50vh;
+    width: 30vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #CDEAE9;
+    border-radius: 3vw;
+    padding: 3vw;
+    padding-top: 3vh;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    z-index: 100;
+}
+
+.export_settings {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 1vw;
+    align-items: center;
+}
+
+#export_email {
+    width: 20vw;
+}
+
+.everything_dashboard {
+    display: none;
+}
+
+.tabs {
+    display: flex;
+    margin-left: 8.39vw;
+    margin-top: 4.93vh;
+    margin-bottom: 1vh;
+}
+
+.tabs a {
+    font-size: 2.5vh;
+    margin-left: 1.5vw;
+    cursor: pointer;
+}
+
+#DataSummary, #AttendanceHistory, #RegisteredPeople {
+    font-family: FuturaHeavy;
+}
+
+hr {
+    border: none; /* Remove default border */
+    height: 2px; /* Set the height of the line */
+    margin-top: 0vh; /* 9.167*/
+    margin-left: 8.39vw;
+    width: 83.27vw;
+    background-color: #889D9D; /* Set the background color of the line */
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    font-family: FuturaBook;
+    font-size: 2vh;
+    margin-left: 9.89vw;
+    margin-right: 9.89vw;
+    margin-bottom: 3.23vh;
+    margin-top: 1.4vh;
+}
+
+.filters input {
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
+}
+
+.filters label {
+    font-size: 2vh;
+}
+.custom-dates {
+    display: none; /* Initially hide the custom date inputs */
+}
+
+.custom-dates input {
+    display: inline-block; /* Make date inputs inline */
+    margin-left: 0.5vw;
+}
+
+#Name {
+    width: 10vw;
+}
+
+#go_button {
+    border-radius: 1vh;
+    font-family: FuturaHeavy;
+    color: #CDEAE9;
+    background-color: #1B8786;
+    font-size: 1.8vh;
+    width: 3vw;
+    height: 3.79vh;
+    border: none;
+}
+
+#go_button:hover {
+    background-color: #125a59;
+}
+
+.dashboard {
+    display: block;
+    height: 64.22vh;
+    width: 83.29vw;
+    background-color: rgba(0,0,0,0.0);
+    margin-left: 8.39vw;
+    margin-bottom: 3.23vh;
+}
+
+.bigbois {
+    display: flex;
+    justify-content: space-between;
+}
+
+.graph1, .graph2{
+    display: flex;
+    flex-direction: column;
+    padding: 0.5vh;
+    justify-content: center;
+    height: 31.64vh;
+    width: 41.08vw;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 3vh;
+}
+
+.twinks {
+    margin-top: 3.23vh;
+    display: flex;
+    justify-content: space-between;
+}
+
+.graph3, .graph4, .graph5 {
+    height: 29.43vh;
+    width: 26.56vw;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 3vh;
+}
+
+/* .graph4 {
+    background-image: url("/images/gad.png");
+    background-size: 30vh auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+} */
+
+
+.graph4 {  position: relative; }
+
+.graph4:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background-image: url("/images/gad.png");
+    background-size: 30vh auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+}
+
+.graph4_1 {
+    position: relative; 
+}
+
+#title_gad {
+    font-family: FuturaHeavy;
+    font-size: 2vh;
+    margin: 1vh;
+}
+
+#table_gad {
+    font-family: FuturaBook;
+    font-size: 2vh;
+    text-align: center;
+    width: 90%;
+    margin-left: 1.8vw;
+    margin-top: 3vh;
+}
+
+#table_gad th {
+    font-family: FuturaHeavy;
+    font-size: 2.5vh;
+}
+
+#FemalePercentage, #MalePercentage {
+    font-family: FuturaHeavy;
+    font-size: 6vh;
+}
+
+#others_table {
+    font-family: FuturaBook;
+    font-size: 2vh;
+    text-align: center;
+    width: 90%;
+    margin-left: 1.5vw;
+    margin-top: 3vh;
+}
+
+#others_table th {
+    font-family: FuturaHeavy;
+    font-size: 5vh;
+}
+
+#others_table td {
+    padding: 0.5vh;
+}
+
+.attandance_table {
+    display: none;
+    overflow: auto;
+    margin-left: 8.39vw;
+    height: 51.4167vh;
+    width: 83.27vw;
+    border-radius: 3vh;   
+}
+
+.theTable_attendance {
+    width: 100%;
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+.theTable_attendance tr:nth-child(even){background-color: #f2f2f2;}
+
+.theTable_attendance tr:hover {background-color: #ddd;}
+
+.theTable_attendance th {
+    font-family: FuturaHeavy;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    text-align: center;
+    color: #07092A;
+}
+
+.theTable_attendance td:not(:first-child) {
+    text-align: center;
+}
+
+.registered_table {
+    display: none;
+    overflow: auto;
+    margin-left: 8.39vw;
+    height: 51.4167vh;
+    width: 83.27vw;
+    border-radius: 3vh;   
+}
+
+.theTable_registered {
+    width: 100%;
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+.theTable_registered tr:nth-child(even){background-color: #f2f2f2;}
+
+.theTable_registered td:first-child + td+td, .theTable_registered td:first-child + td+td+td {text-align: left; padding-left: 0.5vw;}
+
+.theTable_registered tr:hover {background-color: #ddd;}
+
+.theTable_registered th {
+    font-family: FuturaHeavy;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    text-align: center;
+    color: #07092A;
+    position: sticky;
+}
+
+.theTable_registered td:not(:first-child) {
+    text-align: center;
+}

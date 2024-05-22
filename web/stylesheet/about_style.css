@@ -1,0 +1,122 @@
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* Fonts */
+@font-face {
+    font-family: FuturaHeavy;
+    src:    url('/font/futura/FuturaLT-Heavy.woff') format('woff'),
+            url('/font/futura/FuturaLT-Heavy.ttf') format('truetype'); 
+} 
+
+@font-face {
+    font-family: FuturaBoldOblique;
+    src:    url('/font/futura/FuturaLT-BoldOblique.woff') format('woff'),
+            url('/font/futura/FuturaLT-BoldOblique.ttf') format('truetype'); 
+} 
+
+@font-face {
+    font-family: FuturaBook;
+    src:    url('/font/futura/FuturaLT-Book.woff') format('woff'),
+            url('/font/futura/FuturaLT-Book.ttf') format('truetype'); 
+} 
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 16.85vh;
+    padding: 0 20px;
+    background-image: url('/images/navbar_bg.png');
+    background-size: auto 20.85vh; 
+    background-repeat: repeat-x; 
+    background-position: left; 
+    background-color: #1B8786; 
+}
+
+.navbar-title-subtitle {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-title {
+    color: white; 
+    font-size: 6.5vh;
+    margin-left: 8.39vw;
+    font-family: FuturaBoldOblique;
+}
+
+.navbar-subtitle {
+    color: white;
+    font-size: 2vh;
+    margin-left: 8.39vw;
+    margin-top: -1vh;
+    font-family: FuturaBook;
+}
+
+.navbar-links {
+    display: flex;
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    margin-left: 5.08vw;
+}
+
+.navbar a:last-child {
+    margin-right: 8.39vw;
+}
+
+#HomeLink {
+    font-family: FuturaHeavy;
+}
+
+hr {
+    border: none; /* Remove default border */
+    height: 2px; /* Set the height of the line */
+    margin-top: 0vh; /* 9.167*/
+    margin: auto;
+    width: 80%;
+    background-color: #889D9D; /* Set the background color of the line */
+}
+
+main {
+    padding-top: 2vw;
+}
+
+h1, h2, p {
+    margin-left: 10vw;
+    margin-right: 10vw;
+    padding: 2vh;
+}
+
+h1 {
+    color: #1B8786; 
+    font-size: 5.5vh;
+    font-family: FuturaBoldOblique;
+    text-align: center;
+    margin-bottom: 1vh;
+}
+
+h2 {
+    color: #1B8786; 
+    font-size: 4vh;
+    font-family: FuturaHeavy;
+    text-align: left;
+    margin-bottom: 1vh;
+}
+
+p {
+    color: #1B8786; 
+    font-size: 2vh;
+    font-family: FuturaBook;
+    text-align: left;
+    margin-bottom: 1vh;
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Q-STAR of PSHS-ZRC Library</title>
+    <link rel="stylesheet" href="stylesheet/dashboard_style.css">
+    <script>
+      //disables right-click
+      document.addEventListener('contextmenu', function(event){
+          event.preventDefault();
+      });
+  </script>
+  
+  <body>
+    <div class="verification">
+      <div class="exit">
+        <a href="homepage.html">
+          <button onclick="console.log('button clicked x')">x</button>
+        </a>
+      </div>
+      <div class="title_container">
+        <span class="info-title" style="font-size: 3.5vh; font-family: FuturaBoldOblique">Data Dashboard</span>
+        <span class="info-subtitle" style="font-size: 2.5vh; margin-top: -1vh; font-family: FuturaBook;">Verification</span>
+      </div>
+      <div class="password">
+        <div class="group1">
+          <label for="name" class="form__label">Password</label>
+          <div style="display: flex; flex-direction: row; justify-content: center;">
+            <input type="password" class="form_field" name="password" id='password' required onkeydown="handleEnter(event)" />
+            <img id="visibility" src="images\view.png" onclick="togglevisibility()">
+          </div>
+          <button id="submit_verification" onclick="verify_password()">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="export_container">
+      <div class="exit">
+          <button onclick="close_popup()">x</button>
+      </div>
+      <span class="info-subtitle" style="font-size: 2.5vh; margin-top: 10vh; font-family: FuturaBook; text-align: center;">Export Data</span>
+      <div class="export_settings">
+        <label for="email" style="font-size: 2vh; margin-top: 10vh; font-family: FuturaBook;">Receiver's Email:</label>
+        <input type="email" id="export_email" name="email">
+        <button id="export_button" onclick="start_export()">Export</button>
+      </div>
+    </div>
+
+    <div class="everything_dashboard">
+      <div class="navbar">
+        <div class="navbar-title-subtitle">
+          <span class="navbar-title">Q-STAR</span>
+          <span class="navbar-subtitle">QR-Based Student and Teacher Attendance Recorder</span>
+        </div>
+        <div class="navbar-links">
+          <a href="homepage.html">HOME</a>
+          <a href="#" id="DashboardLink">DATA DASHBOARD</a>
+          <a href="about.html">ABOUT</a>
+        </div>
+      </div>
+
+      <main>
+          <!-- Tabs -->
+          <div class="tabs">
+            <a id="DataSummary" onclick="display_table('Data')">Data Summary</a>
+            <a id="AttendanceHistory" onclick="display_table('Attendance')">Attendance History</a>
+            <a id="RegisteredPeople" onclick="display_table('Registered')">Registered</a>
+          </div>
+
+          <hr>
+          
+          <!-- The Filter Options -->
+          <div class="filters">
+            Filter Options:
+            <form id="filter1">
+              <input type="radio" id="today" name="time_range" value="TODAY" checked>
+              <label for="today" id="starting">Today</label>
+              <input type="radio" id="customDate" name="time_range" value="CUSTOM">
+              <label for="customDate" id="customLabel">Custom Time Range</label>
+              <div class="custom-dates">
+                <input type="date" id="startDate" name="startDate">   ---<input type="date" id="endDate" name="endDate">
+              </div>
+            </form>
+
+            <form id="filter2">
+              <input type="text" id="Name" placeholder="Name">
+              <select name="Sex" id="Sex" placeholder="Sex">
+                <option value="None"></option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <input type="text" id="Batch" placeholder="Batch" size="4">
+            </form>
+            <input id="go_button" type="button" onclick="load_graphs('QR SCANNER database/large_sample.csv')" value="Go!">
+            <input id="export" type="button" onclick="display_popup();" value="Export Data">
+          </div>
+
+
+
+          <div class="dashboard">
+            <div class="bigbois">
+
+              <!-- The big bois -->
+              <div class="graph1">
+                <canvas id="visitsVStime"></canvas>
+              </div>
+
+              <div class="graph2">
+                <canvas id="top_students"></canvas>
+              </div>
+            </div>
+            <div class="twinks">
+              <!-- The twinks -->
+              <div class="graph3">
+                <canvas id="batchVisits"></canvas>
+              </div>
+              <div class="graph4">
+                <div class="graph4_1">
+                  <h2 id="title_gad">Gender and Development</h2>
+                  <table id="table_gad">
+                    <tr>
+                      <th>Female</th>
+                      <th>Male</th>
+                    </tr>
+                    <tr>
+                      <td id="FemalePercentage">60%</td>
+                      <td id="MalePercentage">40%</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">of the <span id="total_num">563</span> scholars entered the library <span id="date">from Jan. 1, 2024</span>.
+                        </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="graph5">
+                <h2 id="title_gad">Others</h2>
+                <table id="others_table">
+                  <tr>
+                    <th id="avg_hrs">2hrs</th>
+                    <th id="avg_visits">15</th>
+                    <th id="total_visits">152</th>
+                  </tr>
+                  <tr>
+                    <td>Average time spent in the library</td>
+                    <td>Average number of visits per day</td>
+                    <td>Total number of visits</td>
+                  </tr>
+                </table>
+            </div>
+            </div>
+            
+          </div>
+          
+          <!-- THE ATTENDANCE HISTORY TABLE -->
+          <div class="attandance_table">
+            <table class="theTable_attendance">
+
+            </table>
+          </div>
+
+          <!-- REGISTERED PEOPLE TABLE -->
+          <div class="registered_table">
+            <table class="theTable_registered">
+
+            </table>
+          </div>
+          
+      </main>
+    </div>
+    <script src="script/dashboard_script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="../eel.js"></script>
+  </body>
+</html>

@@ -1,0 +1,361 @@
+/* CSS Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-y: hidden;
+}
+
+body.animated {
+    animation: colorChangeRed 1.5s ease-in-out forwards;
+}
+
+body.animated2 {
+    animation: colorChangeGreen 1.5s ease-in-out forwards;
+}
+
+/* Fonts */
+@font-face {
+    font-family: FuturaHeavy;
+    src:    url('/font/futura/FuturaLT-Heavy.woff') format('woff'),
+            url('/font/futura/FuturaLT-Heavy.ttf') format('truetype'); 
+} 
+
+@font-face {
+    font-family: FuturaBoldOblique;
+    src:    url('/font/futura/FuturaLT-BoldOblique.woff') format('woff'),
+            url('/font/futura/FuturaLT-BoldOblique.ttf') format('truetype'); 
+} 
+
+@font-face {
+    font-family: FuturaBook;
+    src:    url('/font/futura/FuturaLT-Book.woff') format('woff'),
+            url('/font/futura/FuturaLT-Book.ttf') format('truetype'); 
+} 
+
+@keyframes colorChangeGreen {
+    from { background-color: white; }
+    to { background-color: white; } 
+    25%, 75% { background-color: #BBE778; }
+    50% {background-color: white; }
+}
+
+@keyframes colorChangeRed {
+    from { background-color: white; }
+    to { background-color: white; } 
+    25%, 75% { background-color: #FF874A; }
+    50% {background-color: white; }
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 16.85vh;
+    padding: 0 20px;
+    background-image: url('/images/navbar_bg.png');
+    background-size: auto 20.85vh; 
+    background-repeat: repeat-x; 
+    background-position: left; 
+    background-color: #1B8786; 
+}
+
+.navbar-title-subtitle {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-title {
+    color: white; 
+    font-size: 6.5vh;
+    margin-left: 8.39vw;
+    font-family: FuturaBoldOblique;
+}
+
+.navbar-subtitle {
+    color: white;
+    font-size: 2vh;
+    margin-left: 8.39vw;
+    margin-top: -1vh;
+    font-family: FuturaBook;
+}
+
+.navbar-links {
+    display: flex;
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    margin-left: 5.08vw;
+}
+
+.navbar a:last-child {
+    margin-right: 8.39vw;
+}
+
+.error_msg {
+    display: none;
+    flex-direction: row;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    width: 53.75vw;
+    height: 45.99vh;
+    background-color: #CDEAE9;
+    border-radius: 10px;
+    padding: 3vh;
+    font-family: FuturaBook;
+    color: #125a59;
+    font-size: 2vh;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    
+}
+
+.error_msg img {
+    height: 30vh;
+    width: 55vh;
+}
+
+.error_withoutimg {
+    display: flex;
+    flex-direction: column;
+}
+
+.error_sign {
+    height: 30vh;
+    width: auto;
+    margin-top: 5vh;
+    margin-left: 2vw;
+}
+
+.error_msg_content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 5vh;
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+}
+
+.error-title {
+    color: #1B8786; 
+    font-size: 5.5vh;
+    font-family: FuturaHeavy;
+}
+.error-subtitle {
+    color: #1B8786;
+    font-size: 2.4vh;
+    margin-top: 1vh;
+    font-family: FuturaBook;
+}
+
+.error-buttons {
+    margin-top: 5vh;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1vw;
+    margin-right: 2.5vw;
+}
+
+.error-buttons button {
+    border-radius: 3vh;
+    font-family: FuturaBook;
+    color: #CDEAE9;
+    font-size: 1.8vh;
+    width: 7.98vw;
+    height: 3.79vh;
+    border: none;
+}
+
+#close_button {
+    background-color: #889D9D;
+}
+
+#close_button:hover {
+    background-color: #4c5a5a;
+}
+
+#signup_button {
+    background-color: #1B8786;
+}
+
+#signup_button:hover {
+    background-color: #125a59;
+}
+
+.main {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 8.39vw;
+    margin-right: 8.39vw;
+    margin-top: 6.77vh;
+    /* background-image: url('../images/PSHS-ZRC LOGO-modified.png');
+    background-repeat: no-repeat;
+    background-size: auto 20.85vh; 
+    background-position: center;  */
+}
+
+#PisayLogo {
+    position: absolute;
+    width: 60vh;
+    height: 60vh;
+    top: 60%;
+    left: 33%;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.Camera {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.28vh;
+    background-color: rgba(0,0,0,0.4);
+    height: 32.74vh;
+    width: 31.13vw;
+    border-radius: 2vh;
+    /* transform: rotateY(180deg); */
+}
+
+
+#video-frame {
+    height: 32.74vh;
+    width: auto;
+}
+.DateTime {
+    display: flex;
+    flex-direction: column; /* Stacks items vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    margin-top: 7.28vh;
+    background-color: #f2f2f2;
+    height: 17.19vh;
+    width: 31.13vw;
+    border-radius: 2vh;
+}
+
+#Time {
+    font-family: FuturaBook;
+    font-size: 6.5vh;
+}
+
+#Date {
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+.today_table {
+    display: flex;
+    flex-direction: column;
+    height: 60.71vh;
+    width: 50.17vw;
+    border-radius: 2vh; 
+}
+
+.only_the_table {
+    overflow: auto;
+}
+
+.theToday_table {
+    width: 100%;
+    font-family: FuturaBook;
+    font-size: 2.5vh;
+}
+
+
+.theToday_table tr:nth-child(odd){background-color: #f2f2f291;}
+.theToday_table tr:nth-child(even){background-color: #f2f2f2d5;}
+
+.theToday_table td:first-child{text-align: center;}
+
+.theToday_table td:first-child + td {text-align: left; padding-left: 0.5vw;}
+
+.theToday_table tr:hover {background-color: #ddd;}
+
+.theToday_table th {
+    font-family: FuturaHeavy;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    text-align: center;
+    color: white;
+    position: sticky;
+    top: 0;
+    background-color: #39aaa8;
+}
+
+.theToday_table td:not(:first-child) {
+    text-align: center;
+}
+
+.time_in, .time_out {
+    position: absolute;
+    top: 100vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    height: 5vh;
+    width: fit-content;
+    padding-left: 0.5vw;
+    padding-right: 1vw;
+    background-color: #BBE778;
+    font-family: FuturaBook;
+    font-size: 1.8vh;
+    color:#07092A;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.time_out {
+    background-color: #FF874A;
+}
+
+.time_in.animated, .time_out.animated {
+    animation: float 3s ease-in-out forwards;
+}
+
+.time_in img, .time_out img {
+    width: 1vw;
+    height: 1vw;
+    margin: 0.5vw;
+}
+
+@keyframes float {
+    from { transform: translateY(0); opacity: 0; left: 40%; }  
+    to { transform: translateY(0); opacity: 0; left: 40%;}
+    25%, 75% { transform: translateY(-10vh); opacity: 1; }
+}
+
+.success_msg2 {
+    position: absolute;
+    top: 100vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    height: 5vh;
+    width: fit-content;
+    padding-left: 0.5vw;
+    padding-right: 1vw;
+    background-color: #BBE778;
+    font-family: FuturaBook;
+    font-size: 1.8vh;
+    color:#07092A;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.success_msg2.animated {
+    animation: float 3s ease-in-out forwards;
+}
+
+.success_msg2 img {
+    width: 1vw;
+    height: 1vw;
+    margin: 0.5vw;
+}

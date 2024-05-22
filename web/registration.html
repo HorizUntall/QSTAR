@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Q-STAR of PSHS-ZRC Library</title>
+    <link rel="stylesheet" href="stylesheet/registration.css">
+    <script>
+      //disables right-click
+      document.addEventListener('contextmenu', function(event){
+          event.preventDefault();
+      });
+  </script>
+  </head>
+  <body>
+
+    <!-- TERMS & CONDITIONS AND DATA PRIVACY POLICY -->
+    <div class="pop-up">
+      <div class="exit1">
+        <button onclick="update_terms(false); close_popup('pop-up1')">x</button>
+      </div>
+      <div class="pop-up_info">
+        <span id="pop-up_headers"> Data Privacy Policy</span><br>
+        <span>
+          In accordance with the Republic Act No. 10173, otherwise known as the Data Privacy Act of 2012, all personal
+           information gathered from this form shall be kept CONFIDENTIAL where only the researcher of this study shall
+          have access to the said information.
+        </span><br>
+      </div>
+      <div class="accept_button">
+        <button id="accept_button" onclick="update_terms(true); close_popup('pop-up1')">I accept the Data Privacy Policy</button>
+      </div>
+    </div>
+
+    <!-- REVIEW DETAILS POP-UP -->
+    <div class="pop-up2">
+      <div class="exit2">
+        <button onclick="close_popup('pop-up2')">x</button>
+      </div>
+      <div class="review_content">
+        <h1>Review Details</h1>
+        <h3>First Name:</h3>
+        <p id="firstname_review">FirstName HErE</p>
+        <h3>Last Name:</h3>
+        <p id="lastname_review">LastName Here</p>
+        <h3>Batch:</h3>
+        <p id="batch_review">Batch Year Here</p>
+        <h3>Sex:</h3>
+        <p id="sex_review">Female</p>
+        <h3>ID No.:</h3>
+        <p id="id_review"></p>
+        <br>
+        <div class="review-buttons">
+          <button id="close_button" onclick="close_popup('pop-up2')">Go Back</button>
+          <button id="register_button" onclick="register_student()">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="main">
+
+      <div class="main_widget">
+
+        <!-- INFORMATION PANEL -->
+        <div class="info">
+          <div class="title_container">
+            <img src="\images\qr_logo.png" class="logo_title">
+            <span class="info-title">Q-STAR</span>
+            <span class="info-subtitle">QR-Based Student and Teacher Attendance Tracker</span>
+          </div>
+          <div class="general_info">
+            In the pursuit of Digital Inclusion and sustainable technology, this project’s main objective is to develop and 
+            integrate a QR-based digital attendance system in the PSHS-ZRC Library, called Q-STAR (QR-based Student-Tracking
+             Attendance Recorder). Its purpose is to automate the attendance tracking system of the library. Doing so would 
+             speed up the check-in process, decrease the chance of human error, aid in report-making and performance analysis, 
+             and lessen paper usage.
+          </div>
+        </div>
+        
+        <!-- INPUT FIELDS PANEL -->
+        <div class="inputfields">
+          
+          <div class="exit">
+            <a href="homepage.html">
+              <button>x</button>
+            </a>
+          </div>
+
+          <div class="input_title_text">
+            <span class="input-title">Q-STAR</span>
+            <span class="input-subtitle">Registration Form</span>
+          </div>
+          <div class="inputs">
+            <div class="group1">
+              <label for="name" class="form__label">First Name</label>
+              <input type="input" class="form__field" name="firstname" id='firstname' style="color: #1B8786" required />
+            </div>
+            
+            
+            <div class="group2">
+              <label for="name" class="form__label">Last Name</label>
+              <input type="input" class="form__field" placeholder="" name="lastname" id='lastname' required />
+            </div>
+            <div class="group3">
+              <div>
+                <label for="name" class="form__label">Batch Year</label>
+                <select name="batchyear" id="batchyear">
+                  <option value=""></option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
+                  <option value="2029">2029</option>
+                  <option value="0000">Teacher/Staff</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="gender">Sex</label>
+                <select name="gender" id="gender">
+                  <option value=""></option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+            </div>
+            <div class="terms" onclick="check_if_checked()">
+              <input type="checkbox" id="terms" name="terms" onclick="check_if_checked()"> I agree to the <u>Data Privacy Policy</u>.
+            </div>
+            
+            <div class="main-buttons">
+              <a href="homepage.html">
+                <button id="close_button">Back to Homepage</button>
+              </a>
+              <button id="register_button" onclick="submit_verification()">Register</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FEEDBACK MESSAGES -->
+    <div class="success_msg">
+      <img src="images/check.png">
+      <span><b id="registered_name">Successfully</b> added to the database!</span>
+    </div>
+
+    <div class="error_msg">
+      <img src="images/check.png">
+      <span><b id="registered_name">Nicki Minaj</b> already in the database!</span>
+    </div>
+    
+	  <script src="script/registration_script.js"></script>
+    <script type="text/javascript" src="../eel.js"></script>
+  </body>
+</html>

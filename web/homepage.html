@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Q-STAR of PSHS-ZRC Library</title>
+        <link rel="stylesheet" href="stylesheet/homepage_style.css">
+    </head>
+    <script type="text/javascript" src="../eel.js"></script>
+        
+    <script>
+        window.onload = function () {
+            eel.start_scanning_please();
+            start_load_table();
+            const homeLink = document.getElementById('HomeLink');
+            homeLink.style.fontFamily = 'FuturaHeavy';
+        }
+
+        //disables right click
+        document.addEventListener('contextmenu', function(event){
+            event.preventDefault();
+        });
+
+        function goToDashboard() {
+            console.log('Stopping Scanner & Going to dashboard');
+            eel.stop_scanning_please();
+            console.log('SUCCESS Stopping Scanner & Going to About');
+            window.location.href = "dashboard.html";
+        }
+
+        function goToAbout() {
+            console.log('Stopping Scanner & Going to About');
+            eel.stop_scanning_please();
+            console.log('SUCCESS Stopping Scanner & Going to About');
+            window.location.href = "about.html";
+        }
+
+        function goToRegistration() {
+            console.log('Stopping Scanner & Going to Registration');
+            eel.stop_scanning_please();
+            console.log('SUCCESS Stopping Scanner & Going to Registration');
+            window.location.href = "registration.html";
+        }
+
+        eel.expose(update_table)
+        function update_table(htmlcontent) {
+            console.log('initiate update table');
+            const theTable = document.querySelector('.theToday_table');
+            theTable.innerHTML = htmlcontent;
+            scroll_bottom();
+        }
+        
+        eel.expose(animateDivRed)
+        function animateDivRed() {
+            const webbody = document.body;
+            webbody.classList.add("animated");
+            webbody.addEventListener('animationend', () => {
+                webbody.classList.remove("animated");
+            });
+            const success_msg = document.querySelector(".success_msg");
+            success_msg.classList.add("animated");
+            success_msg.addEventListener('animationend', () => {
+                success_msg.classList.remove("animated");
+            });
+        }
+        eel.expose(animateDivGreen)
+        function animateDivGreen() {
+            const webbody = document.body;
+            webbody.classList.add("animated2");
+            webbody.addEventListener('animationend', () => {
+                webbody.classList.remove("animated2");
+            });
+            const success_msg = document.querySelector(".success_msg");
+            success_msg.classList.add("animated");
+            success_msg.addEventListener('animationend', () => {
+                success_msg.classList.remove("animated");
+            });
+        }
+
+        eel.expose(display_error)
+        function display_error() {
+            const error_msg = document.querySelector('.error_msg');
+            if (error_msg.style.display == 'flex') {
+                error_msg.style.display = 'none';
+            } else {
+                error_msg.style.display = 'flex';
+            }
+        }
+
+        eel.expose(invalid_code)
+        function invalid_code() {
+            alert("**Invalid code**");
+        }
+        
+    </script>
+    <body>
+        <div class="navbar">
+            <div class="navbar-title-subtitle">
+                <span class="navbar-title">Q-STAR</span>
+                <span class="navbar-subtitle">QR-Based Student and Teacher Attendance Recorder</span>
+            </div>
+
+            <div class="navbar-links" style="cursor: pointer;">
+                <a  id="HomeLink">HOME</a>
+                <a onclick="goToDashboard()">DATA DASHBOARD</a>
+                <a onclick="goToAbout()">ABOUT</a>
+            </div>
+        </div>
+
+        <div class="error_msg">
+            <img src="\images\error_sign.png" class="error_sign">
+            <div class="error_withoutimg">
+                <div class="error_msg_content">
+                    <span class="error-title">Oh no!</span>
+                    <span class="error-subtitle">It seems like your QR code is not in our
+                        database. Try scanning again or sign up to add
+                        you to the records.</span>
+                </div>
+                <div class="error-buttons">
+                    <button id="close_button" onclick="display_error()">Close</button>
+                    <a onclick="goToRegistration()">
+                        <button id="signup_button">Sign-up</button>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+        
+
+        <div class="main">
+            <img id='PisayLogo' src="images\PSHS-ZRC LOGO-modified.png" alt="PSHS-LOGO">
+            <div class="today_table">
+                <div class="only_the_table">
+                    <table class="theToday_table" id="lamesa">
+                    </table>
+                </div>
+            </div>
+            
+            <div class="right">
+                <div class="Camera">
+                    <img id = "video-frame" src = "">
+                </div>
+
+                <script>
+
+                    function updateFrame(frame) {
+                        document.getElementById('video-frame').src = 'data:image/jpeg;base64,' + frame;
+                    }
+
+                    eel.expose(updateFrame);
+
+                </script>
+        
+                <div class="DateTime"> <!-- display_error(true)  animateDiv -->
+                    <span id="Time"></span>
+                    <span id="Date"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FEEDBACK MESSAGES -->
+        <div class="time_in">
+            <img src="images/check.png">
+            <span>TIMED IN!</span>
+        </div>
+
+        <div class="time_out">
+            <img src="images/check.png">
+            <span>TIMED OUT!</span>
+        </div>
+
+        <div class="success_msg2">
+            <img src="images/check.png">
+            <span><b id="registered_name">Successfully</b> added to the database!</span>
+        </div>
+        
+        <script src="script/homepage_script.js"></script>
+    </body>
+</html>
