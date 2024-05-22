@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\Users\Mary Grace Bihag\AppData\Local\Programs\Python\Python311\Lib\site-packages\eel\__init__.py", line 318, in _process_message
+    return_val = _exposed_functions[message['name']](*message['args'])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Mary Grace Bihag\Desktop\Bayot Files\Grade 12\SS 6\app_website\QSTAR v1.5-20240429T142948Z-001\QSTAR v1.5\QSTAR\main.py", line 172, in stop_scanning_please
+    scanner.stop_scanning()
+  File "c:\Users\Mary Grace Bihag\Desktop\Bayot Files\Grade 12\SS 6\app_website\QSTAR v1.5-20240429T142948Z-001\QSTAR v1.5\QSTAR\main.py", line 118, in stop_scanning
+    self.qr_thread.join()
+    ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'join'
