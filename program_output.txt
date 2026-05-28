@@ -8,3 +8,5 @@ Traceback (most recent call last):
     self.qr_thread.join()
     ^^^^^^^^^^^^^^^^^^^
 AttributeError: 'NoneType' object has no attribute 'join'
+
+test
