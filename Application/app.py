@@ -4,12 +4,30 @@ from pathlib import Path
 from logging.handlers import RotatingFileHandler
 import webview
 
+from modules.qrscanner import test
+
 # GLOBAL VARIABLES
 APP_DIR : Path = Path(__file__).resolve().parent
-ROOT_DIR : Path = APP_DIR.parent()
-LOG_DIR : Path = ROOT_DIR / "Data" / "logs"
+ROOT_DIR : Path = APP_DIR.parent
+LOG_DIR : Path = ROOT_DIR / "Data" / "logs" / "app.log"
 
-LOG_DIR.parent
+def setup_logger():
+    LOG_DIR.parent.mkdir(parents=True, exist_ok=True)
+
+    handler = RotatingFileHandler(
+        LOG_DIR,
+        maxBytes=5 * 1024 * 1024,
+        backupCount=3,
+        encoding="utf-8"
+    )
+
+    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    handler.setFormatter(formatter)
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.ERROR)
+    logger.addHandler(handler)
+    return logger
 
 class Api:
     ...
@@ -29,5 +47,10 @@ class QSTARApp:
 
 
 if __name__ == "__main__":
+    setup_logger()
+
+    logging.error("Test from here")
+    test()
+
     app = QSTARApp()
     app.run()

@@ -1,4 +1,5 @@
 import cv2
+import logging
 from threading import Thread, Timer
 
 class QRCodeScanner:
