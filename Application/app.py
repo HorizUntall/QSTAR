@@ -1,10 +1,14 @@
-import os
 import logging
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
+
 import webview
 
-from modules.qrscanner import test
+from modules.api import Api
+from modules.scanner.qrscanner import QRCodeScanner
+from modules.database.db_manager import DatabaseManager
+from modules.attendance import attendance
+from modules.verifier import verifier
 
 # GLOBAL VARIABLES
 APP_DIR : Path = Path(__file__).resolve().parent
@@ -13,44 +17,40 @@ LOG_DIR : Path = ROOT_DIR / "Data" / "logs" / "app.log"
 
 def setup_logger():
     LOG_DIR.parent.mkdir(parents=True, exist_ok=True)
-
     handler = RotatingFileHandler(
         LOG_DIR,
         maxBytes=5 * 1024 * 1024,
         backupCount=3,
         encoding="utf-8"
     )
-
     formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     handler.setFormatter(formatter)
-
     logger = logging.getLogger()
     logger.setLevel(logging.ERROR)
     logger.addHandler(handler)
     return logger
-
-class Api:
-    ...
+    
 
 class QSTARApp:
 
     def __init__(self) -> None:
         self.indexPage: str = 'web/index.html'
 
+        self.db = DatabaseManager()
+        self.qrscanner = QRCodeScanner(verifier, attendance)
+
+        self.qrscanner.start_scanning()
+
     def check_for_updates(self) -> None:
         ...
 
-    def run(self):
-        webview.create_window('QSTAR', self.indexPage, js_api=self)
-        webview.start()
-
-
+    def run(self) -> None:
+        api = Api(self.qrscanner, self.db)
+        webview.create_window('QSTAR', self.indexPage, js_api=api)
+        webview.start(self.qrscanner.cleanup)
 
 if __name__ == "__main__":
     setup_logger()
-
-    logging.error("Test from here")
-    test()
 
     app = QSTARApp()
     app.run()

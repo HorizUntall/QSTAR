@@ -3,9 +3,10 @@ import logging
 from threading import Thread, Timer
 from pyzbar.pyzbar import decode
 import base64
+from typing import Callable
 
 class QRCodeScanner:
-    def __init__(self, verifierFunction: function, attendanceFunction: function, scan_interval: int = 10, vidSrc: int = 0) -> None:
+    def __init__(self, verifierFunction: Callable, attendanceFunction: Callable, scan_interval: int = 10, vidSrc: int = 0) -> None:
         self.running: bool  = False
         self.last_scanned_qr: str = None
         self.capture_thread: Thread = None
@@ -13,9 +14,10 @@ class QRCodeScanner:
         self.scan_interval: int = scan_interval
         self.vidSrc: int | str = vidSrc
         self.cap: cv2.VideoCapture = None
-        self.verifier: function = verifierFunction
-        self.attendance: function = attendanceFunction
+        self.verifier: Callable = verifierFunction
+        self.attendance: Callable = attendanceFunction
         self.update_frames: bool = False
+        self.frame = None
 
     def capture_frames(self):
         if self.cap is None:
@@ -34,7 +36,7 @@ class QRCodeScanner:
                     try:
                         _, buffer = cv2.imencode('.jpg', cv2.flip(img, 1))
                         frame_bytes = base64.b64encode(buffer)
-                        # Some code that pass the frame to frontend
+                        self.frame = frame_bytes.decode('utf-8')
 
                         for code in decode(img):
                             decoded_data = code.data.decode("utf-8")
@@ -45,9 +47,10 @@ class QRCodeScanner:
                                 self.attendance(self.verifier(decoded_data))
 
                     except Exception as e:
-                        logging.exception("qrscanner.py: ", e)
-                        continue
+                        logging.error("Error in qrscanner.py loop", exc_info=True)
 
+    def fetch_frame(self):
+        return self.frame
 
     def start_scanning(self):
         if not self.running:
