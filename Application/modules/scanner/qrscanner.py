@@ -59,6 +59,7 @@ class QRCodeScanner:
                             try: 
                                 self.window.evaluate_js(js)
                             except Exception as e:
+                                self.running = False
                                 logging.error("Error in qrscanner.py window,", exc_info=True)
                             finally:
                                 self.sending_frame = False

@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 from logging.handlers import RotatingFileHandler
 
+import time
 import webview
 
 from modules.api import Api
@@ -42,6 +43,11 @@ class QSTARApp:
     def check_for_updates(self) -> None:
         ...
 
+    def on_closing(self):
+        self.qrscanner.stop_scanning()
+        self.qrscanner.cleanup()
+        time.sleep(0.1)
+
     def run(self) -> None:
         api = Api(self.qrscanner, self.db)
         window = webview.create_window("QSTAR", self.indexPage, js_api=api)
@@ -50,6 +56,7 @@ class QSTARApp:
         self.qrscanner.window = window
 
         self.qrscanner.start_scanning()
+        window.events.closing += self.on_closing
         webview.start()
 
 if __name__ == "__main__":

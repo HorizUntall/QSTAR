@@ -5,9 +5,10 @@ from .database.db_manager import DatabaseManager
 
 class Api:
     def __init__(self, qrscanner: QRCodeScanner, db: DatabaseManager):
-        ...
-        # self.qrscanner = qrscanner
-        # self.db = db
+        
+        self._scanner = qrscanner
+        self.db = db
+        # ...
 
     # -------------------------------------------------------
     # CAMERA / SCANNER ENDPOINTS
