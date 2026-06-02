@@ -5,20 +5,18 @@ from .database.db_manager import DatabaseManager
 
 class Api:
     def __init__(self, qrscanner: QRCodeScanner, db: DatabaseManager):
-        self.qrscanner = qrscanner
-        self.db = db
+        ...
+        # self.qrscanner = qrscanner
+        # self.db = db
 
     # -------------------------------------------------------
     # CAMERA / SCANNER ENDPOINTS
     # -------------------------------------------------------
-    def get_latest_frame(self) -> Optional[str]:
-        return self.qrscanner.fetch_frame()
-    
-    def pause_camera(self) -> None: 
-        self.qrscanner.stop_scanning()
+    # def pause_camera(self) -> None: 
+    #     self.qrscanner.stop_scanning()
 
-    def resume_camera(self) -> None:
-        self.qrscanner.start_scanning()
+    # def resume_camera(self) -> None:
+    #     self.qrscanner.start_scanning()
 
     
     # -------------------------------------------------------

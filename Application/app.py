@@ -37,17 +37,20 @@ class QSTARApp:
         self.indexPage: str = 'web/index.html'
 
         self.db = DatabaseManager()
-        self.qrscanner = QRCodeScanner(verifier, attendance)
-
-        self.qrscanner.start_scanning()
+        self.qrscanner = QRCodeScanner(verifier, attendance, vidSrc=2)
 
     def check_for_updates(self) -> None:
         ...
 
     def run(self) -> None:
         api = Api(self.qrscanner, self.db)
-        webview.create_window('QSTAR', self.indexPage, js_api=api)
-        webview.start(self.qrscanner.cleanup)
+        window = webview.create_window("QSTAR", self.indexPage, js_api=api)
+        # window = webview.create_window("QSTAR", self.indexPage)
+        # window = webview.create_window("QSTAR", html=html)
+        self.qrscanner.window = window
+
+        self.qrscanner.start_scanning()
+        webview.start()
 
 if __name__ == "__main__":
     setup_logger()
