@@ -53,7 +53,6 @@ class QRCodeScanner:
                             if decoded_data and decoded_data != self.last_scanned_qr:
                                 self.last_scanned_qr = decoded_data
                                 self.start_timer()
-                                print(decoded_data)
                                 self.attendance(decoded_data)
 
                 except Exception as e:

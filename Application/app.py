@@ -55,7 +55,7 @@ class QSTARApp:
         self.qrscanner.start_scanning()
 
         window.events.closing += self.on_closing
-        webview.start()
+        webview.start(debug=True)
 
 if __name__ == "__main__":
     setup_logger()
