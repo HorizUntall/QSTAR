@@ -8,7 +8,6 @@ class Api:
         
         self._scanner = qrscanner
         self.db = db
-        # ...
 
     # -------------------------------------------------------
     # CAMERA / SCANNER ENDPOINTS

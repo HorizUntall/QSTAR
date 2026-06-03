@@ -8,7 +8,7 @@ from typing import Callable
 import webview
 
 class QRCodeScanner:
-    def __init__(self, verifierFunction: Callable, attendanceFunction: Callable, scan_interval: int = 10, vidSrc: int = 0) -> None:
+    def __init__(self, attendanceFunction: Callable, scan_interval: int = 10, vidSrc: int = 0) -> None:
         self.running: bool  = False
         self.last_scanned_qr: str = None
         self.capture_thread: Thread = None
@@ -16,10 +16,9 @@ class QRCodeScanner:
         self.scan_interval: int = scan_interval
         self.vidSrc: int | str = vidSrc
         self.cap: cv2.VideoCapture = None
-        self.verifier: Callable = verifierFunction
         self.attendance: Callable = attendanceFunction
         self.frame_bytes: bytes = None
-        self.frame_counter = 0
+        self.frame_counter: int = 0
 
     def capture_frames(self):
         if self.cap is None:
@@ -49,11 +48,13 @@ class QRCodeScanner:
 
                         for code in decode(img):
                             decoded_data = code.data.decode("utf-8")
+                            
 
                             if decoded_data and decoded_data != self.last_scanned_qr:
                                 self.last_scanned_qr = decoded_data
                                 self.start_timer()
-                                self.attendance(self.verifier(decoded_data))
+                                print(decoded_data)
+                                self.attendance(decoded_data)
 
                 except Exception as e:
                     logging.error("Error in qrscanner.py loop", exc_info=True)
@@ -65,26 +66,26 @@ class QRCodeScanner:
             return self.frame_bytes.decode('utf-8')
         return ""
 
-    def start_scanning(self):
+    def start_scanning(self) -> None:
         if not self.running:
             self.running = True
             self.capture_thread = Thread(target=self.capture_frames, daemon=True)
             self.capture_thread.start()
         self.update_frames = True
 
-    def stop_scanning(self):
+    def stop_scanning(self) -> None:
         self.update_frames = False
     
-    def start_timer(self):
+    def start_timer(self) -> None:
         if self.timer_thread and self.timer_thread.is_alive():
             self.timer_thread.cancel()
         self.timer_thread = Timer(self.scan_interval, self.clear_last_scanned_qr)
         self.timer_thread.start()
 
-    def clear_last_scanned_qr(self):
+    def clear_last_scanned_qr(self) -> None:
         self.last_scanned_qr = None
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         self.running = False
         if self.capture_thread is not None:
             self.capture_thread.join(timeout=1)

@@ -38,7 +38,7 @@ class QSTARApp:
         self.indexPage: str = 'web/index.html'
 
         self.db = DatabaseManager()
-        self.qrscanner = QRCodeScanner(verifier, attendance, vidSrc=2)
+        self.qrscanner = QRCodeScanner(attendance, vidSrc=2)
 
     def check_for_updates(self) -> None:
         ...
