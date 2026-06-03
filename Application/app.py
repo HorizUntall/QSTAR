@@ -44,23 +44,20 @@ class QSTARApp:
         ...
 
     def on_closing(self):
+        print("Closing...")
         self.qrscanner.stop_scanning()
         self.qrscanner.cleanup()
-        time.sleep(0.1)
 
     def run(self) -> None:
         api = Api(self.qrscanner, self.db)
         window = webview.create_window("QSTAR", self.indexPage, js_api=api)
-        # window = webview.create_window("QSTAR", self.indexPage)
-        # window = webview.create_window("QSTAR", html=html)
-        self.qrscanner.window = window
 
         self.qrscanner.start_scanning()
+
         window.events.closing += self.on_closing
         webview.start()
 
 if __name__ == "__main__":
     setup_logger()
-
     app = QSTARApp()
     app.run()
