@@ -8,7 +8,7 @@ from typing import Callable
 import webview
 
 class QRCodeScanner:
-    def __init__(self, attendanceFunction: Callable, scan_interval: int = 10, vidSrc: int = 0) -> None:
+    def __init__(self, scan_interval: int = 10, vidSrc: int = 0) -> None:
         self.running: bool  = False
         self.last_scanned_qr: str = None
         self.capture_thread: Thread = None
@@ -16,7 +16,7 @@ class QRCodeScanner:
         self.scan_interval: int = scan_interval
         self.vidSrc: int | str = vidSrc
         self.cap: cv2.VideoCapture = None
-        self.attendance: Callable = attendanceFunction
+        self.handleScan: Callable | None = None
         self.frame_bytes: bytes = None
         self.frame_counter: int = 0
 
@@ -49,11 +49,10 @@ class QRCodeScanner:
                         for code in decode(img):
                             decoded_data = code.data.decode("utf-8")
                             
-
-                            if decoded_data and decoded_data != self.last_scanned_qr:
+                            if decoded_data and decoded_data != self.last_scanned_qr and self.handleScan is not None:
                                 self.last_scanned_qr = decoded_data
                                 self.start_timer()
-                                self.attendance(decoded_data)
+                                self.handleScan(decoded_data)
 
                 except Exception as e:
                     logging.error("Error in qrscanner.py loop", exc_info=True)

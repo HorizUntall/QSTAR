@@ -5,40 +5,25 @@ from logging.handlers import RotatingFileHandler
 import time
 import webview
 
-from modules.api import Api
+from modules.api.mainAPI import Api
 from modules.scanner.qrscanner import QRCodeScanner
-from modules.database.db_manager import DatabaseManager
-from modules.attendance import attendance
-from modules.verifier import verifier
+from modules.config.logger import setup_logger
 
-# GLOBAL VARIABLES
-APP_DIR : Path = Path(__file__).resolve().parent
-ROOT_DIR : Path = APP_DIR.parent
-LOG_DIR : Path = ROOT_DIR / "Data" / "logs" / "app.log"
-
-def setup_logger():
-    LOG_DIR.parent.mkdir(parents=True, exist_ok=True)
-    handler = RotatingFileHandler(
-        LOG_DIR,
-        maxBytes=5 * 1024 * 1024,
-        backupCount=3,
-        encoding="utf-8"
-    )
-    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-    handler.setFormatter(formatter)
-    logger = logging.getLogger()
-    logger.setLevel(logging.ERROR)
-    logger.addHandler(handler)
-    return logger
-    
+from modules.database.connection import init_db, get_db 
 
 class QSTARApp:
 
     def __init__(self) -> None:
         self.indexPage: str = 'web/index.html'
+        self.qrscanner = QRCodeScanner(vidSrc=2)
 
-        self.db = DatabaseManager()
-        self.qrscanner = QRCodeScanner(attendance, vidSrc=2)
+        try:
+            init_db()
+        except Exception as db_err:
+            logging.critical(f"Database setup layer totally stalled execution: {db_err}")
+            exit(1)
+
+        self.db_conn = get_db()
 
     def check_for_updates(self) -> None:
         ...
@@ -49,9 +34,9 @@ class QSTARApp:
         self.qrscanner.cleanup()
 
     def run(self) -> None:
-        api = Api(self.qrscanner, self.db)
+        api = Api(self.qrscanner, self.db_conn)
         window = webview.create_window("QSTAR", self.indexPage, js_api=api)
-
+        api._setWindow(window)
         self.qrscanner.start_scanning()
 
         window.events.closing += self.on_closing
