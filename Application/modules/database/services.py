@@ -28,7 +28,7 @@ class FacultyService:
     def __init__(self, db_conn: sqlite3.Connection) -> None:
         self.conn = db_conn
 
-    def find_unique(self, faculty_id: str) -> tuple[Faculty | None, str | None] | None:
+    def find_unique(self, faculty_id: str) -> tuple[Faculty | None, str | None]:
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM faculty WHERE id = ?", (faculty_id,))
         row = cursor.fetchone()

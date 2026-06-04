@@ -10,13 +10,13 @@ class DataAPI:
         self.facultyService = FacultyService(db_conn)
         self.attendanceService = AttendanceService(db_conn)
     
-    def find_unique(self, id: str) -> Student | Faculty | None:
-        user = self.studentService.find_unique(id)
+    def find_unique(self, id: str) -> tuple[Student | Faculty | None, str | None] | None:
+        user, user_type = self.studentService.find_unique(id)
         if user is not None:
-            return user
+            return user, user_type
         
-        user = self.facultyService.find_unique(id)
-        return user
+        user, user_type = self.facultyService.find_unique(id)
+        return user, user_type
     
     def register_scan(self, user_id: str, user_type: str) -> dict | None:
         """Processes scanning events. It resolves if action must be Check-In or Check-Out"""

@@ -6,6 +6,7 @@ from webview import Window
 from modules.scanner.qrscanner import QRCodeScanner
 from modules.api.dataAPI import DataAPI
 from modules.api.scannerAPI import ScannerAPI
+from modules.database.models import Student, Faculty, Attendance
 
 
 class Api:
@@ -25,14 +26,24 @@ class Api:
             return {"status": "invalid", "message": "Malformed QR Code skipped"}
         
         # Check profiles data
+        user: Student | Faculty | None
+        user_type: str | None
         user, user_type = self.data.find_unique(scanned_string)
 
         if user is None:
             return {"status": "not_found", "id": scanned_string}
-
-        return {
-                "status": "success"
+        
+        # Log attendance event
+        result = self.data.register_scan(scanned_string, user_type)
+        if result:
+            return {
+                "status": "success",
+                "action": result["action"],
+                "name": f"{user.first_name} {user.last_name}",
+                "type": user_type,
+                "time": result["timestamp"]
             }
+        return {"status": "error", "message": "Database write failure execution event."}
 
     # Check if QR Code is Valid
     def _isValid(self, qr_data: str) -> bool:
