@@ -14,6 +14,9 @@ class Api:
         self.scanner = ScannerAPI(qrscanner)
         self.data = DataAPI(db_conn)
 
+        # For Security
+        self._is_authenticated = False
+
     def _setWindow(self, window_instance: Window) -> None:
         self._window = window_instance
         self.scanner._setWindow(self._window)
@@ -60,5 +63,18 @@ class Api:
     
     def access_dashboard(self, password_input) -> dict:
         if self.data._verify_admin(password_input):
+            self._is_authenticated = True
             return {"status": "granted"}
+        
+        self._is_authenticated = False
         return {"status": "denied", "message": "Incorred access credentials."}
+    
+    def get_dashboard_data(self) -> dict:
+        """Frontend calls this to populate the dashboard"""
+        if not self._is_authenticated:
+            return {"status": "error", "message": "Unauthorized access."}
+        
+        # Reset auth to False
+        self._is_authenticated = False
+        return {"status": "success", "data": self.data.get_sensitive_stuff()}
+        
