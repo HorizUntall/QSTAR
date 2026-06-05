@@ -26,7 +26,7 @@ def load_config() -> dict[str, str]:
         logging.exception("Failed reading config file")
         return DEFAULT_CONFIG
 
-def verify_admin_password(input_pw) -> bool:
+def verify_admin_password(input_pw: str) -> bool:
     config = load_config()
     input_hash = hashlib.sha256(input_pw.encode()).hexdigest()
     return input_hash == config["admin_password_hash"]
