@@ -23,10 +23,28 @@ window.addEventListener("pywebviewready", streamCamera);
 window.addEventListener("qrDetected", async (event) => {
   const qrCodeData = event.detail;
 
-  const response = await pywebview.api.verifyAndProcessQR(qrCodeData);
+  // const response = await pywebview.api.verifyAndProcessQR(qrCodeData);
+
+  // if (response.status === "success") {
+  //   console.log("Success");
+  // } else {
+  //   console.log("Invalid");
+  // }
+
+  // ==== Test Register
+  data = {
+    id: qrCodeData,
+    firstName: "testFirstname",
+    lastName: "testLastname",
+    sex: "male",
+    type: "student",
+    batch: 2024,
+  };
+
+  const response = await pywebview.api.register_new_user(data);
 
   if (response.status === "success") {
-    console.log("Success");
+    console.log("Successs");
   } else {
     console.log("Invalid");
   }

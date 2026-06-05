@@ -10,6 +10,8 @@ class DataAPI:
         self._studentService = StudentService(db_conn)
         self._facultyService = FacultyService(db_conn)
         self._attendanceService = AttendanceService(db_conn)
+
+        self.minutes = 10 # temporary minutes variable
     
     def find_unique(self, id: str) -> tuple[Student | Faculty | None, str | None] | None:
         user, user_type = self._studentService.find_unique(id)
@@ -25,9 +27,14 @@ class DataAPI:
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             today_date = datetime.now().strftime("%Y-%m-%d")
 
+            # Find the current active log where log out is null
             recordId = self._attendanceService.get_active_scan_today(user_id, today_date)
+            
+            # If recordId is None, try to find the previous log 
+            # and check if the current log is within X minutes as the previous log out
+            recordId = self._attendanceService.get_active_scan_within_window(user_id, current_time, self.minutes)
 
-            # userId is None. Thus, log brand new entry as Check-In
+            # recordId is still None. Thus, log brand new entry as Check-In
             if recordId is None:
                 self._attendanceService.check_in(user_id, user_type, current_time)
                 return {"action": "check_in", "timestamp": current_time}
@@ -37,7 +44,6 @@ class DataAPI:
                 self._attendanceService.check_out(recordId, current_time)
                 return {"action": "check_out", "timestamp": current_time}
 
-        
         except Exception:
             logging.exception(f"Attendance writing error occurred targeting target user: {user_id}")
             return None
@@ -61,3 +67,6 @@ class DataAPI:
         
     def _verify_admin(self, input_pw: str):
         return verify_admin_password(input_pw)
+    
+    def _get_sensitive_data(self):
+        ...

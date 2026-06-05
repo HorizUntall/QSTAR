@@ -57,6 +57,7 @@ class Api:
             first_name=form_data["firstName"],
             last_name=form_data["lastName"],
             sex=form_data["sex"],
+            user_type=form_data["type"],
             batch=form_data.get("batch") # Optional
         )
         return {"status": "success" if success else "error"}
@@ -76,5 +77,11 @@ class Api:
         
         # Reset auth to False
         self._is_authenticated = False
-        return {"status": "success", "data": self.data.get_sensitive_stuff()}
-        
+        return {"status": "success", "data": self.data._get_sensitive_data()}
+    
+
+
+"""
+IMPORTANT!!! HOW TO VERIFY IF STUDENT OR FACULTY. 
+MIGHT BE WEIRD IF WHEN A STUDENT REGISTER, THEY CAN JUST LABEL THEMSELVES AS FACULTY
+"""
