@@ -1,11 +1,12 @@
 import sqlite3
+from typing import Tuple
 from modules.database.models import Student
 
 class StudentService:
     def __init__(self, db_conn: sqlite3.Connection) -> None:
         self.conn = db_conn
 
-    def find_unique(self, student_id: str) -> tuple[Student | None, str | None]:
+    def find_unique(self, student_id: str) -> Tuple[Student | None, str | None]:
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM student WHERE id = ?", (student_id,))
         row = cursor.fetchone()

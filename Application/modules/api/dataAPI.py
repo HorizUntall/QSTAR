@@ -1,6 +1,7 @@
 import logging
 import sqlite3
 from datetime import datetime
+from typing import Tuple
 
 from modules.database.models import Student, Faculty, Attendance
 from modules.database.services.studentService import StudentService
@@ -16,7 +17,7 @@ class DataAPI:
 
         self.minutes = 10 # temporary minutes variable
     
-    def find_unique(self, id: str) -> tuple[Student | Faculty | None, str | None] | None:
+    def find_unique(self, id: str) -> Tuple[Student | Faculty | None, str | None] | None:
         user, user_type = self._studentService.find_unique(id)
         if user is not None:
             return user, user_type
@@ -68,7 +69,7 @@ class DataAPI:
             logging.exception(f"Failed writing new profile data for: {user_id}")
             return False
         
-    def _verify_admin(self, input_pw: str):
+    def _verify_admin(self, input_pw: str) -> bool:
         return verify_admin_password(input_pw)
     
     def _get_sensitive_data(self):

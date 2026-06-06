@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict
+from typing import Dict, Any
 
 import sqlite3
 from webview import Window
@@ -51,7 +51,7 @@ class Api:
     def _isValid(self, qr_data: str) -> bool:
         return True
     
-    def register_new_user(self, form_data: dict) -> dict:
+    def register_new_user(self, form_data: dict) -> Dict[str, Any]:
         success = self.data.create_user(
             user_id=form_data["id"],
             first_name=form_data["firstName"],
@@ -62,7 +62,7 @@ class Api:
         )
         return {"status": "success" if success else "error"}
     
-    def access_dashboard(self, password_input) -> dict:
+    def access_dashboard(self, password_input) -> Dict[str, Any]:
         if self.data._verify_admin(password_input):
             self._is_authenticated = True
             return {"status": "granted"}
@@ -70,7 +70,7 @@ class Api:
         self._is_authenticated = False
         return {"status": "denied", "message": "Incorred access credentials."}
     
-    def get_dashboard_data(self) -> dict:
+    def get_dashboard_data(self) -> Dict[str, Any]:
         """Frontend calls this to populate the dashboard"""
         if not self._is_authenticated:
             return {"status": "error", "message": "Unauthorized access."}

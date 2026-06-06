@@ -2,6 +2,7 @@ import json
 import hashlib
 import logging
 from pathlib import Path
+from typing import Dict, Any
 
 CONFIG_PATH = Path("C:/QSTAR/Data/config.json")
 
@@ -12,7 +13,7 @@ DEFAULT_CONFIG = {
     "admin_password_hash": "240aa35473d06c11d1e4602a76d3125a0d341b52a4cf535b91b8d27d73f4e24c"
 }
 
-def load_config() -> dict[str, str]:
+def load_config() -> Dict[str, Any]:
     if not CONFIG_PATH.is_file():
         CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(CONFIG_PATH, "w") as f:
