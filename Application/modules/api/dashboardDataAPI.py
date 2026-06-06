@@ -1,3 +1,0 @@
-class DashboardDataAPI:
-    def __init__(self):
-        ...

@@ -42,4 +42,31 @@ def init_db() -> None:
             time_out TEXT
         )""")
 
+
+        # --- PERFORMANCE INDEXES ---
+
+        # Speeds up date filtering: "Today" queries and custom ranges
+        cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_attendance_time_in
+        ON attendance(time_in)
+        """)
+
+        # Speeds up table joins and user history lookups
+        cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_attendance_user_id
+        ON attendance(user_id, user_type)
+        """)
+
+        # Speeds up name-searching and alphabetical sorting for students
+        cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_student_name
+        ON student(last_name, first_name)
+        """)
+
+        # Speeds up name-searching and alphabetical sorting for faculty
+        cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_faculty_name
+        ON faculty(last_name, first_name)
+        """)
+
         conn.commit()
