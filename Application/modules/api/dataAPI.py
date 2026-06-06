@@ -1,9 +1,12 @@
 import logging
 import sqlite3
 from datetime import datetime
+
 from modules.database.models import Student, Faculty, Attendance
-from modules.database.services import StudentService, FacultyService, AttendanceService
-from modules.database.config_service import verify_admin_password
+from modules.database.services.studentService import StudentService
+from modules.database.services.facultyService import FacultyService
+from modules.database.services.attendanceService import AttendanceService
+from modules.database.services.config_service import verify_admin_password
 
 class DataAPI:
     def __init__(self, db_conn: sqlite3.Connection) -> None:
