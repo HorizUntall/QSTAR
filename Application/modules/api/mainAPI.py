@@ -6,6 +6,7 @@ from webview import Window
 from modules.scanner.qrscanner import QRCodeScanner
 from modules.api.dataAPI import DataAPI
 from modules.api.scannerAPI import ScannerAPI
+from modules.api.auth.guard import GuardAPI
 from modules.database.models import Student, Faculty, Attendance, DashboardFilters
 
 """
@@ -23,14 +24,15 @@ class Api:
         self._window: Window | None = None
         self.scanner = ScannerAPI(qrscanner) # pywebview.api.scanner.method()
         self.data = DataAPI(db_conn) # pywebview.api.data.method()
-
-        # For Security
-        self._is_authenticated = False
+        self._auth = GuardAPI() # pywebview.api.
 
     # Private
     def _setWindow(self, window_instance: Window) -> None:
         self._window = window_instance
         self.scanner._setWindow(self._window)
+
+
+    # ========== Attendance & Homepage Functionalities ==========
 
     # Public
     def verifyAndProcessQR(self, qr_data: str) -> dict:
@@ -77,20 +79,24 @@ class Api:
         )
         return {"status": "success" if success else "error"}
     
-    # Public
-    def access_dashboard(self, password_input) -> Dict[str, Any]:
-        """Verifies password input for granting access for dashboard"""
-        if self.data._verify_admin(password_input):
-            self._is_authenticated = True
-            return {"status": "granted"}
-        
-        self._is_authenticated = False
-        return {"status": "denied", "message": "Incorred access credentials."}
+
+    # ========== For Security and Navigation =========== 
     
+    # Public
+    def authenticate(self, input_pw: str) -> Dict[str, Any]:
+        return self._auth.authenticate(input_pw)
+    
+    # Public
+    def navigate_to(self, dest: str) -> Dict[str, Any]:
+        return self._auth.navigate_to(dest)
+    
+
+    # ========== For Dashboard Functionalities ==========
+
     # Public
     def get_dashboard_data(self, filters_dict: Dict[str, Any]) -> Dict[str, Any]:
         """Frontend calls this to populate the dashboard"""
-        if not self._is_authenticated:
+        if not self._auth._isAuthorized:
             return {"status": "error", "message": "Unauthorized access."}
         
         filters = DashboardFilters(**filters_dict)
@@ -111,7 +117,7 @@ class Api:
         # page -> Page index
         # page_size -> amount of rows/data in a single page
 
-        if not self._is_authenticated:
+        if not self._auth._isAuthorized:
             return {"status": "error", "message": "Unauthorized access."}
         
         filters = DashboardFilters(**filters_dict)
@@ -132,7 +138,7 @@ class Api:
         # page -> Page index
         # page_size -> amount of rows/data in a single page
 
-        if not self._is_authenticated:
+        if not self._auth._isAuthorized:
             return {"status": "error", "message": "Unauthorized access."}
         
         filters = DashboardFilters(**filters_dict)

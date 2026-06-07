@@ -75,10 +75,8 @@ class DataAPI:
         except Exception:
             logging.exception(f"Failed writing new profile data for: {user_id}")
             return False
-
-    # Private 
-    def _verify_admin(self, input_pw: str) -> bool:
-        return verify_admin_password(input_pw)
+    
+    # ========== For Dashboard Functionalities
     
     # Private
     def _get_processed_dashboard_data(self, filters: DashboardFilters, topUsersLimit: int = 5, num_batches: int = 6) -> Dict[str, Any]:
