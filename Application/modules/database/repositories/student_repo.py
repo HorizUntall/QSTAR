@@ -2,7 +2,7 @@ import sqlite3
 from typing import Tuple
 from modules.database.models import Student
 
-class StudentService:
+class StudentRepository:
     def __init__(self, db_conn: sqlite3.Connection) -> None:
         self.conn = db_conn
 

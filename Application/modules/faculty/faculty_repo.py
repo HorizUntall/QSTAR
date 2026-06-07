@@ -1,16 +1,15 @@
 import sqlite3
-from typing import Tuple
-from modules.database.models import Faculty
+from modules.faculty.faculty_models import Faculty
 
-class FacultyService:
+class FacultyRepository:
     def __init__(self, db_conn: sqlite3.Connection) -> None:
         self.conn = db_conn
 
-    def find_unique(self, faculty_id: str) -> Tuple[Faculty | None, str | None]:
+    def find_unique(self, faculty_id: str) -> Faculty | None:
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM faculty WHERE id = ?", (faculty_id,))
         row = cursor.fetchone()
-        return (Faculty(**dict(row)), "faculty") if row is not None else (None, None)
+        return Faculty(**dict(row)) if row is not None else None
     
     def create(self, faculty: Faculty) -> None:
         cursor = self.conn.cursor()

@@ -27,6 +27,6 @@ def load_config() -> Dict[str, Any]:
         logging.exception("Failed reading config file")
         return DEFAULT_CONFIG
 
-def get_password() -> str:
+def get_data(key: str) -> Any:
     config = load_config()
-    return config["admin_password_hash"]
+    return config.get(key)
