@@ -1,12 +1,13 @@
 import logging
 import sqlite3
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, Dict, Any
 
-from modules.database.models import Student, Faculty, Attendance
+from modules.database.models import Student, Faculty, Attendance, DashboardFilters
 from modules.database.services.studentService import StudentService
 from modules.database.services.facultyService import FacultyService
 from modules.database.services.attendanceService import AttendanceService
+from modules.database.services.dashboardService import DashboardService
 from modules.database.services.config_service import verify_admin_password
 
 class DataAPI:
@@ -14,10 +15,13 @@ class DataAPI:
         self._studentService = StudentService(db_conn)
         self._facultyService = FacultyService(db_conn)
         self._attendanceService = AttendanceService(db_conn)
+        self._dashboardService = DashboardService(db_conn)
 
         self.minutes = 10 # temporary minutes variable
     
+    # Public
     def find_unique(self, id: str) -> Tuple[Student | Faculty | None, str | None] | None:
+        """Returns the user details if user exists in the database"""
         user, user_type = self._studentService.find_unique(id)
         if user is not None:
             return user, user_type
@@ -25,6 +29,7 @@ class DataAPI:
         user, user_type = self._facultyService.find_unique(id)
         return user, user_type
     
+    # Public
     def register_scan(self, user_id: str, user_type: str) -> dict | None:
         """Processes scanning events. It resolves if action must be Check-In or Check-Out"""
         try:
@@ -51,8 +56,10 @@ class DataAPI:
         except Exception:
             logging.exception(f"Attendance writing error occurred targeting target user: {user_id}")
             return None
-        
+
+    # Public 
     def create_user(self, user_id: str, first_name: str, last_name: str, sex: str, user_type: str, batch: str = None) -> bool:
+        """Creates a new user (Faculty/Student)"""
         try:
             if user_type == "student":
                 user = Student(user_id, first_name, last_name, batch, sex)
@@ -68,9 +75,31 @@ class DataAPI:
         except Exception:
             logging.exception(f"Failed writing new profile data for: {user_id}")
             return False
-        
+
+    # Private 
     def _verify_admin(self, input_pw: str) -> bool:
         return verify_admin_password(input_pw)
     
-    def _get_sensitive_data(self):
-        ...
+    # Private
+    def _get_processed_dashboard_data(self, filters: DashboardFilters, topUsersLimit: int = 5, num_batches: int = 6) -> Dict[str, Any]:
+        """Returns processed dashboard data using the filters"""
+
+        return {
+            "visits_vs_time": self._dashboardService.get_library_visits_vs_time(filters=filters),
+            "top_goers": self._dashboardService.get_top_library_goers(filters=filters, limit=topUsersLimit),
+            "batch_visits": self._dashboardService.get_visits_per_batch(filters=filters, num_batches=num_batches),
+            "gender": self._dashboardService.get_gender_development(filters=filters),
+            "kpis": self._dashboardService.get_kpis(filters=filters)   
+        }
+    
+    # Private
+    def _get_processed_attendance_history(self, filters: DashboardFilters, page: int = 1, page_size: int = 100) -> Dict[str, Any]:
+        """Returns processed attendance history using the filters"""
+
+        return self._dashboardService.get_attendance_history(filters=filters, page=page, page_size=page_size)
+    
+    # Private
+    def _get_processed_registered_users(self, filters: DashboardFilters, page: int = 1, page_size: int = 100) -> Dict[str, Any]:
+        """Returns processed registerd users list using the filters"""
+
+        return self._dashboardService.get_registered_users(filters=filters, page=page, page_size=page_size)

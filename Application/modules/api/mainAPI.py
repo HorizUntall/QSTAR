@@ -6,22 +6,35 @@ from webview import Window
 from modules.scanner.qrscanner import QRCodeScanner
 from modules.api.dataAPI import DataAPI
 from modules.api.scannerAPI import ScannerAPI
-from modules.database.models import Student, Faculty, Attendance
+from modules.database.models import Student, Faculty, Attendance, DashboardFilters
+
+"""
+Note:
+Only public methods can be accessed and called by the backend. 
+The class Api is the main API and holds other API classes.
+To call the main API: pywebview.api.method()
+
+Names/Identifier of Private Methods and Variables start with an underscore(_)
+"""
+
 
 class Api:
     def __init__(self, qrscanner: QRCodeScanner, db_conn: sqlite3.Connection) -> None:
         self._window: Window | None = None
-        self.scanner = ScannerAPI(qrscanner)
-        self.data = DataAPI(db_conn)
+        self.scanner = ScannerAPI(qrscanner) # pywebview.api.scanner.method()
+        self.data = DataAPI(db_conn) # pywebview.api.data.method()
 
         # For Security
         self._is_authenticated = False
 
+    # Private
     def _setWindow(self, window_instance: Window) -> None:
         self._window = window_instance
         self.scanner._setWindow(self._window)
 
+    # Public
     def verifyAndProcessQR(self, qr_data: str) -> dict:
+        """This method processes the scanned QR Code"""
         scanned_string = str(qr_data).strip()
 
         if not self._isValid(scanned_string):
@@ -47,10 +60,12 @@ class Api:
             }
         return {"status": "error", "message": "Database write failure execution event."}
 
-    # Check if QR Code is Valid
+    # Private
     def _isValid(self, qr_data: str) -> bool:
+        """Check if QR Code is Valid"""
         return True
     
+    # Public
     def register_new_user(self, form_data: dict) -> Dict[str, Any]:
         success = self.data.create_user(
             user_id=form_data["id"],
@@ -62,7 +77,9 @@ class Api:
         )
         return {"status": "success" if success else "error"}
     
+    # Public
     def access_dashboard(self, password_input) -> Dict[str, Any]:
+        """Verifies password input for granting access for dashboard"""
         if self.data._verify_admin(password_input):
             self._is_authenticated = True
             return {"status": "granted"}
@@ -70,16 +87,65 @@ class Api:
         self._is_authenticated = False
         return {"status": "denied", "message": "Incorred access credentials."}
     
-    def get_dashboard_data(self) -> Dict[str, Any]:
+    # Public
+    def get_dashboard_data(self, filters_dict: Dict[str, Any]) -> Dict[str, Any]:
         """Frontend calls this to populate the dashboard"""
         if not self._is_authenticated:
             return {"status": "error", "message": "Unauthorized access."}
         
-        # Reset auth to False
-        self._is_authenticated = False
-        return {"status": "success", "data": self.data._get_sensitive_data()}
+        filters = DashboardFilters(**filters_dict)
+        topUsersLimit = 5
+        num_batches = 6
+        if "topUsersLimit" in filters_dict:
+            topUsersLimit = filters_dict["topUsersLimit"]
+        if "num_batches" in filters_dict:
+            num_batches = filters_dict["num_batches"]
+        
+        return {"status": "success", "data": self.data._get_processed_dashboard_data(filters=filters, 
+                                                                           topUsersLimit=topUsersLimit, 
+                                                                           num_batches=num_batches)}
     
+    # Public
+    def get_attendance_history(self, filters_dict: Dict[str, Any]) -> Dict[str, Any]:
+        """Frontend calls this to populate attendance history"""
+        # page -> Page index
+        # page_size -> amount of rows/data in a single page
 
+        if not self._is_authenticated:
+            return {"status": "error", "message": "Unauthorized access."}
+        
+        filters = DashboardFilters(**filters_dict)
+        page = 1
+        page_size = 100
+        if "page" in filters_dict:
+            page = filters_dict["page"]
+        if "page_size" in filters_dict:
+            page_size = filters_dict["page_size"]
+        
+        return {"status": "success", "data": self.data._get_processed_attendance_history(filters=filters,
+                                                                                         page=page,
+                                                                                         page_size=page_size)}
+    
+    # Public
+    def get_registered_users(self, filters_dict: Dict[str, Any]) -> Dict[str, Any]:
+        """Frontend calls this to populate registered users list"""
+        # page -> Page index
+        # page_size -> amount of rows/data in a single page
+
+        if not self._is_authenticated:
+            return {"status": "error", "message": "Unauthorized access."}
+        
+        filters = DashboardFilters(**filters_dict)
+        page = 1
+        page_size = 100
+        if "page" in filters_dict:
+            page = filters_dict["page"]
+        if "page_size" in filters_dict:
+            page_size = filters_dict["page_size"]
+        
+        return {"status": "success", "data": self.data._get_processed_registered_users(filters=filters,
+                                                                                         page=page,
+                                                                                         page_size=page_size)}
 
 """
 IMPORTANT!!! HOW TO VERIFY IF STUDENT OR FACULTY. 
