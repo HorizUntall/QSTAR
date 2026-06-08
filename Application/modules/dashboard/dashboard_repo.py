@@ -3,13 +3,13 @@ import sqlite3
 import logging
 from typing import Tuple, List, Any, Dict
 
-from modules.dashboard.dashboard_models import DashboardFilters
+from modules.dashboard.dashboard_models import DashboardFiltersDTO
 
 class DashboardRepository:
     def __init__(self, db_conn: sqlite3.Connection) -> None:
         self.conn = db_conn
 
-    def _build_base_query(self, filters: DashboardFilters) -> Tuple[str, List[Any]]:
+    def _build_base_query(self, filters: DashboardFiltersDTO) -> Tuple[str, List[Any]]:
         """
         Builds a common table expression (CTE) and dynamic WHERE clause.
         Returns the CTE SQL string and the list of parameters
@@ -64,7 +64,7 @@ class DashboardRepository:
     # ---------------------------------------------------------
     # 1. Library Visits vs Time
     # ---------------------------------------------------------
-    def get_library_visits_vs_time(self, filters: DashboardFilters) -> pd.DataFrame:
+    def get_library_visits_vs_time(self, filters: DashboardFiltersDTO) -> pd.DataFrame:
         cte, params = self._build_base_query(filters)
         query  = cte + """
         SELECT DATE(time_in) as visit_date, COUNT(*) as frequency
@@ -77,7 +77,7 @@ class DashboardRepository:
     # ---------------------------------------------------------
     # 2. Top Library Goers
     # ---------------------------------------------------------
-    def get_top_library_goers(self, filters: DashboardFilters, limit: int = 5) -> pd.DataFrame:
+    def get_top_library_goers(self, filters: DashboardFiltersDTO, limit: int = 5) -> pd.DataFrame:
         cte, params = self._build_base_query(filters)
         query = cte + """
         SELECT user_id, first_name, last_name, user_type, batch, COUNT(*) as total_visits
@@ -92,7 +92,7 @@ class DashboardRepository:
     # ---------------------------------------------------------
     # 3. Library Visits per Batch
     # ---------------------------------------------------------
-    def get_visits_per_batch(self, filters: DashboardFilters, num_batches: int = 6) -> pd.DataFrame:
+    def get_visits_per_batch(self, filters: DashboardFiltersDTO, num_batches: int = 6) -> pd.DataFrame:
         cte, params = self._build_base_query(filters)
 
         # Group by batch. Order Faculty to the end, and sort batches descending.
@@ -111,7 +111,7 @@ class DashboardRepository:
     # ---------------------------------------------------------
     # 4. Gender and Development
     # ---------------------------------------------------------
-    def get_gender_development(self, filters: DashboardFilters) -> Dict[str, Any]:
+    def get_gender_development(self, filters: DashboardFiltersDTO) -> pd.DataFrame:
         cte, params = self._build_base_query(filters)
         query = cte + """
         SELECT
@@ -120,22 +120,12 @@ class DashboardRepository:
             SUM(CASE WHEN sex = 'F' THEN 1 ELSE 0 END) as female_count
         FROM FilteredAttendance
         """
-        df = pd.read_sql_query(query, self.conn, params=params)
-        if df.empty or df['total_visits'].iloc[0] == 0:
-            return {"total_visits": 0, "male_pct": 0.0, "female_pct": 0.0}
-        
-        row = df.iloc[0]
-        total = row['total_visits']
-        return {
-            "total_visits": int(total),
-            "male_pct": round((row['male_count'] / total) * 100, 2),
-            "female_pct": round((row['female_count'] / total) * 100, 2)
-        }
+        return pd.read_sql_query(query, self.conn, params=params)
     
     # ---------------------------------------------------------
     # 5. Others (KPIs)
     # ---------------------------------------------------------
-    def get_kpis(self, filters: DashboardFilters) -> Dict[str, Any]:
+    def get_kpis(self, filters: DashboardFiltersDTO) -> pd.DataFrame:
         cte, params = self._build_base_query(filters)
         # SQLite Julianday returns fractional days. So, multiply by 24*60 for minutes
         query = cte + """
@@ -145,22 +135,12 @@ class DashboardRepository:
             AVG((JULIANDAY(time_out) - JULIANDAY(time_in)) * 24 * 60) as avg_minutes_spent
         FROM FilteredAttendance
         """
-        df = pd.read_sql_query(query, self.conn, params=params)
-        row = df.iloc[0]
-
-        active_days = row['active_days'] or 1
-        total_visits = row['total_visits'] or 0
-
-        return {
-            "total_visits": int(total_visits),
-            "avg_visits_per_day": round(total_visits / active_days, 2) if total_visits > 0 else 0.0,
-            "avg_time_spent_minutes": round(row['avg_minutes_spent'], 2) if pd.notnull(row['avg_minutes_spent']) else 0.0
-        }
+        return pd.read_sql_query(query, self.conn, params=params)
     
     # ---------------------------------------------------------
     # 6. Paginated Attendance History List
     # ---------------------------------------------------------
-    def get_attendance_history(self, filters: DashboardFilters, page: int = 1, page_size: int = 100) -> Dict[str, Any]:
+    def get_attendance_history(self, filters: DashboardFiltersDTO, page: int = 1, page_size: int = 100) -> Tuple[pd.DataFrame, int]:
         cte, params = self._build_base_query(filters)
         offset = (page - 1) * page_size
 
@@ -182,20 +162,12 @@ class DashboardRepository:
         data_params = params + [page_size, offset]
         df = pd.read_sql_query(data_query, self.conn, params=data_params)
 
-        return {
-            "data": df.to_dict(orient="records"),
-            "pagination": {
-                "total_records": total_records,
-                "current_page": page,
-                "page_size": page_size,
-                "total_pages": (total_records + page_size - 1) // page_size if total_records > 0 and page_size > 0 else 1
-            }
-        }
+        return df, total_records
     
     # ---------------------------------------------------------
     # 7. Paginated Registered Users
     # ---------------------------------------------------------
-    def get_registered_users(self, filters: DashboardFilters, page: int = 1, page_size: int = 100) -> Dict[str, Any]:
+    def get_registered_users(self, filters: DashboardFiltersDTO, page: int = 1, page_size: int = 100) -> Tuple[pd.DataFrame, int]:
         """
         This targets the CombinedUsers view directly, completely ignoring attendance.
         """
@@ -242,12 +214,4 @@ class DashboardRepository:
         """
         df = pd.read_sql_query(data_query, self.conn, params=params + [page_size, offset])
 
-        return {
-            "data": df.to_dict(orient="records"),
-            "pagination": {
-                "total_records": total_records,
-                "current_page": page,
-                "page_size": page_size,
-                "total_pages": (total_records + page_size - 1) // page_size if total_records > 0 and page_size > 0 else 1
-            }
-        }
+        return df, total_records

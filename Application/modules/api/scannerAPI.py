@@ -2,6 +2,7 @@ from modules.scanner.qrscanner import QRCodeScanner
 from webview import Window
 import json
 
+"""Main API extension for handling scanner/camera endpoints"""
 class ScannerAPI:
     def __init__(self, qrscanner: QRCodeScanner) -> None:
         self._scanner: QRCodeScanner = qrscanner

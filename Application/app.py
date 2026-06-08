@@ -21,12 +21,17 @@ from modules.attendance.attendance_service import AttendanceService
 from modules.dashboard.dashboard_repo import DashboardRepository
 from modules.dashboard.dashboard_service import DashboardService
 
+from modules.auth.auth_service import AuthService
+from modules.navigation.navigation_service import NavigationService
+
 from modules.database.connection import init_db, get_db 
 
 class QSTARApp:
 
     def __init__(self) -> None:
-        self.indexPage: str = 'web/index.html'
+        self.root_dir = Path(__file__).resolve().parent
+        self.web_dir = self.root_dir / "web"
+        self.indexPage = self.web_dir / "index.html"
         self.qrscanner = QRCodeScanner(vidSrc=2)
 
         try:
@@ -38,23 +43,38 @@ class QSTARApp:
         db_conn = get_db()
 
         # Student Module
-        student_repo = StudentRepository(db_conn=db_conn)
-        student_service = StudentService(student_repo=student_repo)
+        self.student_repo = StudentRepository(db_conn=db_conn)
+        self.student_service = StudentService(student_repo=self.student_repo)
 
         # Faculty Module
-        faculty_repo = FacultyRepository(db_conn=db_conn)
-        faculty_service = FacultyService(faculty_repo=faculty_repo)
+        self.faculty_repo = FacultyRepository(db_conn=db_conn)
+        self.faculty_service = FacultyService(faculty_repo=self.faculty_repo)
 
         # Attendance Module
-        attendance_repo = AttendanceRepository(db_conn=db_conn)
-        attendance_service = AttendanceService(attendance_repo=attendance_repo)
+        self.attendance_repo = AttendanceRepository(db_conn=db_conn)
+        self.attendance_service = AttendanceService(attendance_repo=self.attendance_repo,
+                                                    student_repo=self.student_repo,
+                                                    faculty_repo=self.faculty_repo)
 
         # Dashboard Module
-        dashboard_repo = DashboardRepository(db_conn=db_conn)
-        dashboard_service = DashboardService(dashboard_repo=dashboard_repo)
+        self.dashboard_repo = DashboardRepository(db_conn=db_conn)
+        self.dashboard_service = DashboardService(dashboard_repo=self.dashboard_repo)
+
+        # Auth Module
+        self.auth_service = AuthService()
+
+        # Navigation Module
+        self.nav_service = NavigationService(web_dir=self.web_dir,
+                                        auth_service=self.auth_service)
 
         # Load Main API
-        self.api = Api(self.qrscanner)
+        self.api = Api(qrscanner=self.qrscanner,
+                       attendance_service=self.attendance_service,
+                       student_service=self.student_service,
+                       faculty_service=self.faculty_service,
+                       dashboard_service=self.dashboard_service,
+                       auth_service=self.auth_service,
+                       nav_service=self.nav_service)
 
 
     def check_for_updates(self) -> None:
@@ -66,9 +86,8 @@ class QSTARApp:
         self.qrscanner.cleanup()
 
     def run(self) -> None:
-        api = Api(self.qrscanner, self.db_conn)
-        window = webview.create_window("QSTAR", self.indexPage, js_api=api)
-        api._setWindow(window)
+        window = webview.create_window("QSTAR", url=str(self.indexPage), js_api=self.api)
+        self.api._setWindow(window)
         self.qrscanner.start_scanning()
 
         window.events.closing += self.on_closing

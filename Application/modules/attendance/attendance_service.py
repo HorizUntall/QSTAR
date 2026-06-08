@@ -1,4 +1,7 @@
 from typing import Dict, Any, Tuple
+from datetime import datetime
+
+from modules.shared.code_validate_and_parse import validate_and_parse
 
 from modules.student.student_models import StudentDTO
 from modules.student.student_repo import StudentRepository
@@ -14,12 +17,13 @@ class AttendanceService:
         self.student_repo = student_repo
         self.faculty_repo = faculty_repo
 
-    def verify_and_process_qr(self, qr_data: str) -> Dict[str, Any]:
-        
-        parsed = self.validate_and_parse(qr_data=qr_data)
+        self.cutoff_time = 10 # temporary minutes available
+
+    def verify_and_process_qr(self, qr_data: str) -> Dict[str, Any]: 
+        parsed = validate_and_parse(qr_data=qr_data)
 
         if not parsed["is_valid"]:
-            return {"status": "invalid", "message": f"Scan Rejected: {parsed["reason"]}"}
+            return {"status": "invalid", "message": f"Scan Rejected: {parsed['reason']}"}
         
         user: StudentDTO | FacultyDTO | None
         scanned_id: str = parsed["id"]
@@ -34,39 +38,25 @@ class AttendanceService:
             return {
                 "status": "not_found",
                 "id": scanned_id,
-                "type": user_type,
+                "user_type": user_type,
             }
         
-        
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        today_date = datetime.now().strftime("%Y-%m-%d")
 
-    def validate_and_parse(self, qr_data: str) -> Dict[str, Any]:
-        scanned_str = str(qr_data).strip()
+        # Find the current active log where log out is null
+        recordId = self.attendance_repo.find_active_in_record(user_id=user.id, date_prefix=today_date)
 
-        # If code is too short or too long
-        if len(scanned_str) < 5 or len(scanned_str) > 25:
-            return {"is_valid": False, "reason": f"Invalid length string. Received: '{qr_data}'"}
+        # If recordId is None, try to find the previous log
+        # and check if the current log is within X minutes as the previous log out
+        recordId = self.attendance_repo.find_recent_out_record(user_id=user.id, cutoff_time=self.cutoff_time)
+
+        # If recordId is still None, then log a brand new entyr as Check-In
+        if recordId is None:
+            self.attendance_repo.insert_time_in(user_id=user.id, user_type=user_type, time_in=current_time)
+            return {"status": "success", "action": "check_in", "timestamp": current_time}
         
-        # Format must be X-Y-Z
-        parts = scanned_str.split('-')
-        if len(parts) < 2:
-            return {"is_valid": False, "reason": f"Malformed identifier layout: '{qr_data}'"}
-        
-        stripped_str = scanned_str.replace('-', '')
-        
-        # Rule A: Purely numbers and dashes = Student
-        if stripped_str.isdigit():
-            return {
-                "is_valid": True,
-                "user_type": "student",
-                "id": scanned_str
-            }
-        
-        # Rule B: Contains letters = Faculty
-        elif any(char.isalpha() for char in stripped_str):
-            return {
-                "is_valid": True,
-                "user_type": "faculty",
-                "id": scanned_str
-            }
-        
-        return {"is_valid": False, "reason": "Unknown identifier type. Received: '{qr_data}'"}
+        # Otherwise, update open track to Check-Out
+        else:
+            self.attendance_repo.update_time_out(record_id=recordId, time_out=current_time)
+            return {"status": "success", "action": "check_out", "timestamp": current_time}

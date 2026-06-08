@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
+# Currently not being used
 @dataclass(slots=True)
-class Attendance:
+class AttendanceDTO:
     """Dataclass for Attendance"""
     id: int
     user_id: str
