@@ -35,7 +35,7 @@ class Api:
     # ========== Attendance & Homepage Functionalities ==========
 
     # Public
-    def verifyAndProcessQR(self, qr_data: str) -> dict:
+    def verifyAndProcessQR(self, qr_data: str) -> Dict[str, Any]:
         """This method processes the scanned QR Code"""
         scanned_string = str(qr_data).strip()
 

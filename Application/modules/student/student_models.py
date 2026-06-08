@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass(slots=True)
-class Student:
+class StudentDTO:
     """Dataclass for Student"""
     id: str
     first_name: str

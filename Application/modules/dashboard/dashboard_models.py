@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 @dataclass
-class DashboardFilters:
+class DashboardFiltersDTO:
     """Dataclass to hold and transport filter states cleanly"""
     start_date: Optional[str] = None    # Format: 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'
     end_date: Optional[str] = None      # Format: 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'
