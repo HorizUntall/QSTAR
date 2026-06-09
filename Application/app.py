@@ -23,6 +23,7 @@ from modules.dashboard.dashboard_service import DashboardService
 
 from modules.auth.auth_service import AuthService
 from modules.navigation.navigation_service import NavigationService
+from modules.config.asset_manifest_service import AssetManifestService
 
 from modules.database.connection import init_db, get_db 
 
@@ -63,9 +64,12 @@ class QSTARApp:
         # Auth Module
         self.auth_service = AuthService()
 
+        # Config Module
+        self.asset_manifest_service = AssetManifestService(web_dir=self.web_dir)
+
         # Navigation Module
-        self.nav_service = NavigationService(web_dir=self.web_dir,
-                                        auth_service=self.auth_service)
+        self.nav_service = NavigationService(manifest_service=self.asset_manifest_service,
+                                             auth_service=self.auth_service)
 
         # Load Main API
         self.api = Api(qrscanner=self.qrscanner,
@@ -74,6 +78,7 @@ class QSTARApp:
                        faculty_service=self.faculty_service,
                        dashboard_service=self.dashboard_service,
                        auth_service=self.auth_service,
+                       manifest_service=self.asset_manifest_service,
                        nav_service=self.nav_service)
 
 

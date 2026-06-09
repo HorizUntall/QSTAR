@@ -5,10 +5,15 @@ class NavbarComponent extends HTMLElement {
 
   layout() {
     return /*html*/ `
+
         <nav>
         <div class="nav-left">
           <h1>Q-STAR</h1>
           <h2>QR-Based Attendance</h2>
+        </div>
+
+        <div class="nav-right">
+
         </div>
       </nav>
         `;

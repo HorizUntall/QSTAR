@@ -28,7 +28,24 @@ async function router(pageName) {
 }
 
 // Global scope expose for view changes
-window.appRouter = router;
-window.addEventListener("pywebviewready", () => {
+window.addEventListener("pywebviewready", async () => {
+  try {
+    const assets = await window.pywebview.api.get_boot_assets();
+
+    assets.css_files.forEach((cssUrl) => {
+      if (!document.querySelector(`link[href="${cssUrl}"]`)) {
+        console.log(`Auto-loading style sheet ruleset: ${cssUrl}`);
+
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = cssUrl;
+
+        document.head.appendChild(link);
+      }
+    });
+  } catch (error) {
+    console.error("Failed to parse and inject automated asset headers:", error);
+  }
+
   router("homepage");
 });

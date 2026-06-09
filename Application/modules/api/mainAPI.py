@@ -19,6 +19,7 @@ from modules.dashboard.dashboard_service import DashboardService
 
 from modules.auth.auth_service import AuthService
 from modules.navigation.navigation_service import NavigationService
+from modules.config.asset_manifest_service import AssetManifestService
 
 """
 Note:
@@ -37,28 +38,35 @@ class Api:
                  faculty_service: FacultyService,
                  dashboard_service: DashboardService,
                  auth_service: AuthService,
+                 manifest_service: AssetManifestService,
                  nav_service: NavigationService) -> None:
         
         self._window: Window | None = None
         self.scanner = ScannerAPI(qrscanner) # pywebview.api.scanner.method()
 
+        self._manifest = manifest_service
         self._attendance_service = attendance_service
         self._student_service = student_service
         self._faculty_service = faculty_service
         self._dashboard_service = dashboard_service
         self._auth_service = auth_service
-        self.nav_service = nav_service
+        self._nav_service = nav_service
 
     # Private
     def _setWindow(self, window_instance: Window) -> None:
         self._window = window_instance
         self.scanner._setWindow(self._window)
 
+    # Public
+    def get_boot_assets(self) -> Dict[str, Any]:
+        """Method for index.js to call at startup"""
+        return {"css_files": self._manifest.get_all_css()}
+
     # ========== For Security and Navigation =========== 
 
     # Public
     def changePage(self, dest_page: str) -> Dict[str, Any]:
-        return self.nav_service.get_page_layout(dest_page)
+        return self._nav_service.get_page_layout(dest_page)
     
     # Public
     def loginAdmin(self, password: str) -> Dict[str, Any]:

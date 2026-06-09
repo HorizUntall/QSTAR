@@ -1,0 +1,9 @@
+/* styles/navbar.css */
+/* styles for components/navbar.js */
+
+app-navbar nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: #1a1a1a;
+  padding: 1rem;
+}
