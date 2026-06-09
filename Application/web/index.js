@@ -18,7 +18,7 @@ async function router(pageName) {
 
       // Inject the element wrapper. The Web Component's lifecycle boots instantly
       document.getElementById("app-viewport").innerHTML = content;
-    } else if (response === "unauthorized") {
+    } else if (response.status === "unauthorized") {
       alert("Access Denied. Redirecting to login...");
       router("login");
     }
