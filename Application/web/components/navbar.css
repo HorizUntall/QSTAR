@@ -1,0 +1,62 @@
+/* styles/navbar.css */
+/* styles for app-navbar */
+
+app-navbar {
+  nav {
+    display: flex;
+    justify-content: space-between;
+    background-color: #1b8786;
+    padding: 1rem;
+    color: white;
+    height: 16.85vh;
+    padding: 0 20px;
+    background-image: url("../assets/images/navbar_bg.png");
+    background-size: auto 20.85vh;
+    background-repeat: repeat-x;
+    background-position: left;
+  }
+
+  .nav-left {
+    display: flex;
+    flex-direction: column;
+    background-color: green;
+  }
+
+  .nav-left h1 {
+    font-family: "FuturaHeavy";
+  }
+
+  .nav-left h2 {
+    font-family: "FuturaBooks";
+  }
+
+  .nav-right {
+    display: flex;
+  }
+
+  .nav-right ul {
+    display: flex;
+  }
+}
+
+/* Fonts */
+@font-face {
+  font-family: FuturaHeavy;
+  src:
+    url("/font/futura/FuturaLT-Heavy.woff") format("woff"),
+    url("/font/futura/FuturaLT-Heavy.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: FuturaBoldOblique;
+  src:
+    url("/font/futura/FuturaLT-BoldOblique.woff") format("woff"),
+    url("/font/futura/FuturaLT-BoldOblique.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: FuturaBook;
+  src:
+    url("/font/futura/FuturaLT-Book.woff") format("woff"),
+    url("/font/futura/FuturaLT-Book.ttf") format("truetype");
+}

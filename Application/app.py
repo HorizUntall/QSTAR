@@ -1,8 +1,8 @@
 import logging
 from pathlib import Path
-from logging.handlers import RotatingFileHandler
+import watchfiles
+from threading import Event, Thread
 
-import time
 import webview
 
 from modules.api.mainAPI import Api
@@ -29,11 +29,17 @@ from modules.database.connection import init_db, get_db
 
 class QSTARApp:
 
-    def __init__(self) -> None:
+    def __init__(self, devMode=False) -> None:
         self.root_dir = Path(__file__).resolve().parent
         self.web_dir = self.root_dir / "web"
         self.indexPage = self.web_dir / "index.html"
         self.qrscanner = QRCodeScanner(vidSrc=2)
+        self.window: webview.Window | None = None
+
+        """For Dev Mode Hot Reloading"""
+        self.devMode = devMode
+        self.stop_watcher_event = Event()  # Clean exit state trigger
+        self.watcher_thread: Thread | None = None
 
         try:
             init_db()
@@ -81,24 +87,42 @@ class QSTARApp:
                        manifest_service=self.asset_manifest_service,
                        nav_service=self.nav_service)
 
-
     def check_for_updates(self) -> None:
         ...
 
     def on_closing(self):
         print("Closing...")
+
+        if self.devMode:
+            print("[Dev Hot Reload] Stopping file watcher thread...")
+            self.stop_watcher_event.set()
+
         self.qrscanner.stop_scanning()
         self.qrscanner.cleanup()
 
+    def watch_and_reload(self) -> None:
+        """Fires automatically on changes ONLY when devMode is active."""
+        for change in watchfiles.watch(".", stop_event=self.stop_watcher_event):
+            if self.window is not None:
+                self.asset_manifest_service._generate_manifest()
+                self.window.evaluate_js("window.location.reload()")
+
     def run(self) -> None:
-        window = webview.create_window("QSTAR", url=str(self.indexPage), js_api=self.api)
-        self.api._setWindow(window)
+        self.window = webview.create_window("QSTAR", url=str(self.indexPage), js_api=self.api)
+        self.api._setWindow(self.window)
         self.qrscanner.start_scanning()
 
-        window.events.closing += self.on_closing
-        webview.start(debug=True)
+        self.window.events.closing += self.on_closing
+
+        if self.devMode:
+            self.watcher_thread = Thread(target=self.watch_and_reload)
+            self.watcher_thread.daemon = True
+            self.watcher_thread.start()
+            webview.start(debug=True)
+        else:
+            webview.start()
 
 if __name__ == "__main__":
     setup_logger()
-    app = QSTARApp()
+    app = QSTARApp(devMode=True)
     app.run()

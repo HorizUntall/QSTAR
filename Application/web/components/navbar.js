@@ -13,7 +13,11 @@ class NavbarComponent extends HTMLElement {
         </div>
 
         <div class="nav-right">
-
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Data Dashboard</a></li>
+            <li><a href="#">About</a></li>
+          </ul>
         </div>
       </nav>
         `;

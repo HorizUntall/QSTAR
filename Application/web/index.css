@@ -9,20 +9,20 @@
 @font-face {
   font-family: FuturaHeavy;
   src:
-    url("/font/futura/FuturaLT-Heavy.woff") format("woff"),
-    url("/font/futura/FuturaLT-Heavy.ttf") format("truetype");
+    url("./font/futura/FuturaLT-Heavy.woff") format("woff"),
+    url("./font/futura/FuturaLT-Heavy.ttf") format("truetype");
 }
 
 @font-face {
   font-family: FuturaBoldOblique;
   src:
-    url("/font/futura/FuturaLT-BoldOblique.woff") format("woff"),
-    url("/font/futura/FuturaLT-BoldOblique.ttf") format("truetype");
+    url("./font/futura/FuturaLT-BoldOblique.woff") format("woff"),
+    url("./font/futura/FuturaLT-BoldOblique.ttf") format("truetype");
 }
 
 @font-face {
   font-family: FuturaBook;
   src:
-    url("/font/futura/FuturaLT-Book.woff") format("woff"),
-    url("/font/futura/FuturaLT-Book.ttf") format("truetype");
+    url("./font/futura/FuturaLT-Book.woff") format("woff"),
+    url("./font/futura/FuturaLT-Book.ttf") format("truetype");
 }
