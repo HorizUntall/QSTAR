@@ -3,52 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
+    <title>QSTAR</title>
     <link rel="stylesheet" href="./index.css" />
-    <link rel="stylesheet" href="./styles/homepage.css" />
+
+    <script type="module" src="./index.js"></script>
   </head>
   <body>
-    <nav>
-      <div class="nav-left">
-        <h1>Q-STAR</h1>
-        <h2>QR-Based Student and Teacher Attendance Recorder</h2>
-      </div>
-
-      <div class="nav-right">
-        <a href="#">HOME</a>
-        <a href="#">DATA DASHBOARD</a>
-        <a href="#">ABOUT</a>
-      </div>
-    </nav>
-
-    <main>
-      <!-- PISAY LOGO BG -->
-      <!-- <img
-        id="pisayLogo_img"
-        src="./assets/images/PSHS-ZRC LOGO-modified.png"
-        alt="PSHS-LOGO"
-      /> -->
-
-      <!-- LEFT: Table -->
-      <div class="main-left">
-        <div id="today-table-container">
-          <table id="today-table"></table>
-        </div>
-      </div>
-
-      <!-- RIGHT: Video/Camera, Date and Time -->
-      <div class="main-right">
-        <div class="camera">
-          <img id="cameraFeed" src="" alt="camera" />
-        </div>
-
-        <div class="dateTime">
-          <span id="time"></span>
-          <span id="date"></span>
-        </div>
-      </div>
-    </main>
-
-    <script src="scripts/homepage.js"></script>
+    <!-- This holds other pages -->
+    <div id="app-viewport"></div>
   </body>
 </html>

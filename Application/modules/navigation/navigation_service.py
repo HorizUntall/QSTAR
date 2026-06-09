@@ -6,34 +6,40 @@ from modules.auth.auth_service import AuthService
 class NavigationService:
     def __init__(self, web_dir: Path, auth_service: AuthService) -> None:
         self.auth_service = auth_service
+        self._cache: Dict[str, Dict[str, str]] = {}
+        self._secured_pages = set()
 
-        # HTML Pages (!!!This must be updated when adding new pages !!!)
-        self._file_map = {
-            "homepage": web_dir / "pages" / "homepage.html",
-            "registration": web_dir / "pages" / "registration.html",
-            "login": web_dir / "pages" / "login.html",
-            "dashboard": web_dir / "pages" / "dashboard.html",
-            "settings": web_dir / "pages" / "settings.html",
-            "about": web_dir / "pages" / "about.html"
-        }
+        views_dir = web_dir / "views"
+        self._auto_discover_views(views_dir)
 
-        # Admin-Only Pages. Name must match from file_map !!!
-        self._admin_pages = set([
-            "dashboard",
-            "settings"
-        ])
+    def _auto_discover_views(self, views_dir: Path) -> None:
+        if not views_dir.exists():
+            return
+        
+        for js_file in views_dir.rglob("*.js"):
+            page_name = js_file.stem
 
-        # Cache. Read files into memory immediately on boot
-        self._cache = {}
-        for page_name, file_path in self._file_map.items():
-            if file_path.exists():
-                self._cache[page_name] = file_path.read_text(encoding="utf-8")
+            relative_parts = js_file.relative_to(views_dir.parent).parts
+            js_url = "./" + "/".join(relative_parts)
+
+            self._cache[page_name] = {
+                "tag": f"<app-{page_name}></app-{page_name}>",
+                "script_url": js_url
+            }
+
+            # Security folders check
+            if "admin" in js_file.parts:
+                self._secured_pages.add(page_name)
 
     def get_page_layout(self, page_name: str) -> Dict[str, Any]:
         if page_name not in self._cache:
             return {"status": "error", "message": "Layout not found."}
         
-        if page_name in self._admin_pages and not self.auth_service.is_admin():
+        if page_name in self._secured_pages and not self.auth_service.is_admin():
             return {"status": "unauthorized", "message": "Access Denied."}
         
-        return {"status": "success", "content": self._cache[page_name]}
+        return {
+            "status": "success",
+            "content": self._cache[page_name]["tag"],
+            "script_url": self._cache[page_name]["script_url"]
+        }

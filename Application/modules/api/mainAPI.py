@@ -1,6 +1,5 @@
 from typing import Dict, Any
 
-import sqlite3
 from webview import Window
 
 from modules.scanner.qrscanner import QRCodeScanner
