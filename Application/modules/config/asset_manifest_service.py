@@ -19,13 +19,19 @@ class AssetManifestService:
         version = int(time.time())
 
         # Discover all CSS styles
+        index_style: str | None = None
         for css_file in self.web_dir.rglob("*.css"):
             # Ignore index.css at the root level
-            if css_file.name == "index.css":
-                continue
+            # if css_file.name == "index.css":
+            #     continue
 
             rel_parts = css_file.relative_to(self.web_dir).parts
+            if (css_file.name == "index.css"):
+                index_style = "./" + "/".join(rel_parts) + f"?v={version}"
+                continue
             self._css_urls.append("./" + "/".join(rel_parts) + f"?v={version}")
+        if index_style:
+            self._css_urls.insert(0, index_style)
 
         # Discover all JS views
         views_dir = self.web_dir / "views"
