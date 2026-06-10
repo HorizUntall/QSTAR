@@ -22,14 +22,6 @@ app-navbar {
     background-color: green;
   }
 
-  .nav-left h1 {
-    font-family: "FuturaHeavy";
-  }
-
-  .nav-left h2 {
-    font-family: "FuturaBooks";
-  }
-
   .nav-right {
     display: flex;
   }

@@ -5,27 +5,38 @@
   padding: 0;
   box-sizing: border-box;
   overflow-y: hidden;
-  background-color: green;
+  font-family: "Futura", sans-serif;
+  font-weight: normal;
+  font-style: italic;
 }
 
 /* Fonts */
 @font-face {
-  font-family: FuturaHeavy;
+  font-family: "Futura";
   src:
-    url("./font/futura/FuturaLT-Heavy.woff") format("woff"),
-    url("./font/futura/FuturaLT-Heavy.ttf") format("truetype");
+    url("./assets/fonts/futura/FuturaLT-Heavy.woff") format("woff"),
+    url("./assets/fonts/futura/FuturaLT-Heavy.ttf") format("truetype");
+  font-weight: bolder;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: FuturaBoldOblique;
+  font-family: "Futura";
   src:
-    url("./font/futura/FuturaLT-BoldOblique.woff") format("woff"),
-    url("./font/futura/FuturaLT-BoldOblique.ttf") format("truetype");
+    url("./assets/fonts/futura/FuturaLT-BoldOblique.woff") format("woff"),
+    url("./assets/fonts/futura/FuturaLT-BoldOblique.ttf") format("truetype");
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: FuturaBook;
+  font-family: "Futura";
   src:
-    url("./font/futura/FuturaLT-Book.woff") format("woff"),
-    url("./font/futura/FuturaLT-Book.ttf") format("truetype");
+    url("./assets/fonts/futura/FuturaLT.woff"),
+    url("./assets/fonts/futura/FuturaLT.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
