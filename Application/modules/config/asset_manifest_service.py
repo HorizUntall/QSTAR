@@ -21,9 +21,6 @@ class AssetManifestService:
         # Discover all CSS styles
         index_style: str | None = None
         for css_file in self.web_dir.rglob("*.css"):
-            # Ignore index.css at the root level
-            # if css_file.name == "index.css":
-            #     continue
 
             rel_parts = css_file.relative_to(self.web_dir).parts
             if (css_file.name == "index.css"):

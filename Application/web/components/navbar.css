@@ -5,21 +5,27 @@ app-navbar {
   nav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background-color: #1b8786;
-    padding: 1rem;
     color: white;
     height: 16.85vh;
-    padding: 0 20px;
     background-image: url("../assets/images/navbar_bg.png");
     background-size: auto 20.85vh;
     background-repeat: repeat-x;
     background-position: left;
+    padding-inline: 150px;
   }
 
   .nav-left {
     display: flex;
     flex-direction: column;
-    background-color: green;
+    /* width: 100%; */
+  }
+
+  .nav-left h1 {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 4rem;
   }
 
   .nav-right {
@@ -27,7 +33,20 @@ app-navbar {
   }
 
   .nav-right ul {
+    gap: 100px;
     display: flex;
+    justify-content: space-between;
+  }
+
+  .nav-right a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+  }
+
+  .nav-right a:hover {
+    font-weight: bold;
   }
 }
 

@@ -9,7 +9,7 @@ class NavbarComponent extends HTMLElement {
         <nav>
         <div class="nav-left">
           <h1>Q-STAR</h1>
-          <h2>QR-Based Attendance</h2>
+          <h2>QR-Based Student and Teacher Attendance Recorder</h2>
         </div>
 
         <div class="nav-right">
