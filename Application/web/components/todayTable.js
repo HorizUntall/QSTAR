@@ -1,8 +1,71 @@
 class TodayTableComponent extends HTMLElement {
-  connectedCallback() {
+  async connectedCallback() {
     this.innerHTML = this.layout();
 
-    // Scroll down
+    try {
+      if (!window.pywebview || !window.pywebview.api) {
+        await new Promise((resolve) =>
+          window.addEventListener("pywebviewready", resolve),
+        );
+      }
+
+      const data = await window.pywebview.api.get_today_attendance();
+      this.renderRows(data);
+    } catch (error) {
+      console.error("Failed to load today's attendance:", error);
+      this.querySelector("tbody").innerHTML =
+        `<tr><td colspan="4" style="text-align:center; color:red;">Error loading data</td></tr>`;
+    }
+  }
+
+  renderRows(data) {
+    const tbody = this.querySelector("tbody");
+    if (!tbody) return;
+
+    if (data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No attendance records for today yet.</td></tr>`;
+      return;
+    }
+
+    // Helper to format "YYYY-MM-DD HH:MM:SS" string to "H:MM PM/AM"
+    const formatTime = (dateTimeString) => {
+      if (!dateTimeString) return null;
+
+      const timePart = dateTimeString.split(" ")[1];
+      if (!timePart) return dateTimeString;
+
+      const [hoursStr, minutesStr] = timePart.split(":");
+      let hours = parseInt(hoursStr, 10);
+      const minutes = minutesStr;
+
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12;
+      hours = hours ? hours : 12; // convert '0' to '12'
+
+      return `${hours}:${minutes} ${ampm}`;
+    };
+
+    tbody.innerHTML = data
+      .map((row, index) => {
+        // Format time strings cleanly
+        const formattedIn = formatTime(row.time_in);
+        const formattedOut = formatTime(row.time_out);
+
+        const timeOutDisplay = formattedOut
+          ? formattedOut
+          : '<span class="status-active">Active</span>';
+
+        return /*html*/ `
+        <tr>
+          <td class="no-col">${index + 1}</td>
+          <td class="name-col">${row.first_name} ${row.last_name}</td>
+          <td class="time-col">${formattedIn}</td>
+          <td class="time-col">${timeOutDisplay}</td>
+        </tr>
+      `;
+      })
+      .join("");
+
     this.scrollToBottom();
   }
 
@@ -29,21 +92,7 @@ class TodayTableComponent extends HTMLElement {
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td>John Doe</td><td>07:45 AM</td><td>--:--</td></tr>
-              <tr><td>2</td><td>Jane Smith</td><td>07:52 AM</td><td>12:05 PM</td></tr>
-              <tr><td>3</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
-              <tr><td>4</td><td>John Doe</td><td>07:45 AM</td><td>--:--</td></tr>
-              <tr><td>5</td><td>Jane Smith</td><td>07:52 AM</td><td>12:05 PM</td></tr>
-              <tr><td>6</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
-              <tr><td>7</td><td>John Doe</td><td>07:45 AM</td><td>--:--</td></tr>
-              <tr><td>8</td><td>Jane Smith</td><td>07:52 AM</td><td>12:05 PM</td></tr>
-              <tr><td>9</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
-              <tr><td>10</td><td>John Doe</td><td>07:45 AM</td><td>--:--</td></tr>
-              <tr><td>11</td><td>Jane Smith</td><td>07:52 AM</td><td>12:05 PM</td></tr>
-              <tr><td>12</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
-              <tr><td>12</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
-              <tr><td>12</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
-              <tr><td>12</td><td>Alex Rivera</td><td>08:02 AM</td><td>--:--</td></tr>
+              <tr><td colspan="4" style="text-align:center; color:gray;">Loading today's records...</td></tr>
             </tbody>
           </table>
         </div>

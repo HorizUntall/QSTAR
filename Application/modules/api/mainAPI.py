@@ -80,6 +80,11 @@ class Api:
     # ========== Attendance & Homepage Functionalities ==========
 
     # Public
+    def get_today_attendance(self) -> list[Dict[str, Any]]:
+        """This endpoint returns a list of entries within today"""
+        return self._attendance_service.get_today_attendance()
+
+    # Public
     def processScannedCode(self, qr_data: str) -> Dict[str, Any]:
         """This endpoint processes the scanned QR Code"""
 
