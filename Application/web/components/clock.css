@@ -1,0 +1,29 @@
+app-clock {
+  /* Balanced Dynamic Clock Component Widget */
+  .clock-container {
+    background-color: #f1f3f4;
+    border-radius: 15px;
+    padding: 20px; /* Reduced padding for cleaner structural scale balance */
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #333333;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.02);
+  }
+
+  .time-display {
+    font-size: clamp(
+      2.2rem,
+      3.8vw,
+      3.2rem
+    ); /* Scaled slightly down to match aesthetic weight */
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.5px;
+  }
+
+  .date-display {
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    color: #5f6368;
+    margin: 6px 0 0 0;
+  }
+}

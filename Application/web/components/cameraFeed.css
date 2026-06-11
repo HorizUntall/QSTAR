@@ -1,0 +1,21 @@
+app-camerafeed {
+  /* Camera Component Windows */
+  .camera-container {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background-color: #9e9e9e;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  }
+
+  #cameraFeed {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: #000000;
+  }
+}
