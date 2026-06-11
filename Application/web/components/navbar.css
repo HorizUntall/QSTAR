@@ -8,66 +8,64 @@ app-navbar {
     align-items: center;
     background-color: #1b8786;
     color: white;
-    height: 16.85vh;
+
+    min-height: 120px;
+    height: auto;
+
     background-image: url("../assets/images/navbar_bg.png");
-    background-size: auto 20.85vh;
+    background-size: auto 100%;
     background-repeat: repeat-x;
     background-position: left;
-    padding-inline: 150px;
+
+    padding: 1rem 5%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    gap: 20px;
   }
 
   .nav-left {
     display: flex;
     flex-direction: column;
-    /* width: 100%; */
+    min-width: fit-content;
   }
 
   .nav-left h1 {
     font-weight: bold;
     font-style: italic;
-    font-size: 4rem;
+
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin: 0;
+  }
+
+  .nav-left p {
+    margin: 0;
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
   }
 
   .nav-right {
     display: flex;
+    align-items: center;
   }
 
   .nav-right ul {
-    gap: 100px;
+    gap: clamp(20px, 5vw, 100px);
     display: flex;
     justify-content: space-between;
+    list-style: none; /* Keeps defaults clean */
+    margin: 0;
+    padding: 0;
   }
 
   .nav-right a {
     text-decoration: none;
     color: white;
-    font-size: 1.8rem;
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
     text-transform: uppercase;
+    white-space: nowrap;
+    transition: font-weight 0.2s ease;
   }
 
   .nav-right a:hover {
     font-weight: bold;
   }
-}
-
-/* Fonts */
-@font-face {
-  font-family: FuturaHeavy;
-  src:
-    url("/font/futura/FuturaLT-Heavy.woff") format("woff"),
-    url("/font/futura/FuturaLT-Heavy.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: FuturaBoldOblique;
-  src:
-    url("/font/futura/FuturaLT-BoldOblique.woff") format("woff"),
-    url("/font/futura/FuturaLT-BoldOblique.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: FuturaBook;
-  src:
-    url("/font/futura/FuturaLT-Book.woff") format("woff"),
-    url("/font/futura/FuturaLT-Book.ttf") format("truetype");
 }
