@@ -1,8 +1,8 @@
 // Import components
-import "../components/navbar.js";
-import "../components/camerafeed.js";
-import "../components/clock.js";
-import "../components/todayTable.js";
+import "../../components/navbar/navbar.js";
+import "../../components/camerafeed/camerafeed.js";
+import "../../components/clock/clock.js";
+import "../../components/todayTable/todayTable.js";
 
 class HomepageComponent extends HTMLElement {
   constructor() {
