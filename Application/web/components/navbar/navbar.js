@@ -1,6 +1,24 @@
 class NavbarComponent extends HTMLElement {
   connectedCallback() {
     this.innerHTML = this.layout();
+
+    const homeLink = document.getElementById("homeLink");
+    homeLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await window.router("homepage");
+    });
+
+    const dashboardLink = document.getElementById("dashboardLink");
+    dashboardLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await window.router("login");
+    });
+
+    const aboutLink = document.getElementById("aboutLink");
+    aboutLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await window.router("about");
+    });
   }
 
   layout() {
@@ -14,9 +32,9 @@ class NavbarComponent extends HTMLElement {
 
         <div class="nav-right">
           <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Data Dashboard</a></li>
-            <li><a href="#">About</a></li>
+            <li><a href="#" id="homeLink">Home</a></li>
+            <li><a href="#" id="dashboardLink">Data Dashboard</a></li>
+            <li><a href="#" id="aboutLink">About</a></li>
           </ul>
         </div>
       </nav>

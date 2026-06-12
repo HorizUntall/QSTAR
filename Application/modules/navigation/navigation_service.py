@@ -15,7 +15,7 @@ class NavigationService:
         
         script_url = self._manifest.get_view_script(page_name=page_name)
 
-        if "/admin/" in script_url and not self.auth_service.is_admin():
+        if "/_admin/" in script_url and not self.auth_service.is_admin():
             return {"status": "unauthorized", "message": "Access Denied. Admin clearance required."}
         
         return {

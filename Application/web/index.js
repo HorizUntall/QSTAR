@@ -27,6 +27,8 @@ async function router(pageName) {
   }
 }
 
+window.router = router;
+
 // Global scope expose for view changes
 window.addEventListener("pywebviewready", async () => {
   try {
