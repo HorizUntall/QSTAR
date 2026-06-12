@@ -6,7 +6,7 @@ class AboutViewComponent extends HTMLElement {
 
     const testBtn = document.getElementById("testBtn");
     testBtn.addEventListener("click", async () => {
-      await window.router("settings");
+      await window.router("registration");
     });
   }
 

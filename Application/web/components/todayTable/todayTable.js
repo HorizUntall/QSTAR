@@ -1,20 +1,36 @@
 class TodayTableComponent extends HTMLElement {
   async connectedCallback() {
+    // 1. Setup the initial structural skeleton
     this.innerHTML = this.layout();
 
+    // 2. Fetch data for the first time
+    await this.fetchAndRender();
+  }
+
+  async fetchAndRender() {
     try {
+      // Ensure pywebview API is fully initialized
       if (!window.pywebview || !window.pywebview.api) {
         await new Promise((resolve) =>
           window.addEventListener("pywebviewready", resolve),
         );
       }
 
+      // Show a slight loading visual state while querying the database (Optional but nice)
+      const tbody = this.querySelector("tbody");
+      if (tbody && tbody.children.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:gray;">Updating records...</td></tr>`;
+      }
+
+      // Fetch fresh data from Python DB and render the updated rows
       const data = await window.pywebview.api.get_today_attendance();
       this.renderRows(data);
     } catch (error) {
       console.error("Failed to load today's attendance:", error);
-      this.querySelector("tbody").innerHTML =
-        `<tr><td colspan="4" style="text-align:center; color:red;">Error loading data</td></tr>`;
+      const tbody = this.querySelector("tbody");
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Error loading data</td></tr>`;
+      }
     }
   }
 
@@ -47,7 +63,6 @@ class TodayTableComponent extends HTMLElement {
 
     tbody.innerHTML = data
       .map((row, index) => {
-        // Format time strings cleanly
         const formattedIn = formatTime(row.time_in);
         const formattedOut = formatTime(row.time_out);
 

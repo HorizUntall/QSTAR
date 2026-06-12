@@ -21,3 +21,6 @@ class FacultyService:
                 "message": f"Validation failed: Sex must be either 'M' or 'F'. Received: '{faculty.sex}'"
             } 
         faculty.sex = normalized_sex
+
+        self.repo.create(faculty)
+        return {"status": "success", "message": "Faculty registered successfully."}

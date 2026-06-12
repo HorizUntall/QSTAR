@@ -1,7 +1,7 @@
 // Keep track of scripts that are already dynamically imported to save CPU cycles
 const loadedScripts = new Set();
 
-async function router(pageName) {
+async function router(pageName, data = undefined) {
   try {
     // Get layout data from Python
     const response = await window.pywebview.api.changePage(pageName);
@@ -14,6 +14,11 @@ async function router(pageName) {
         console.log(`Auto-importing script payload: ${script_url}`);
         await import(script_url);
         loadedScripts.add(script_url);
+      }
+
+      // Store data globally so the upcoming component can read it
+      if (data !== undefined) {
+        window.routerState = data;
       }
 
       // Inject the element wrapper. The Web Component's lifecycle boots instantly

@@ -15,6 +15,36 @@ class HomepageComponent extends HTMLElement {
 
       const response =
         await window.pywebview.api.processScannedCode(qrCodeData);
+
+      if (response.status === "invalid") {
+        console.error("Invalid QR Data"); // <-- UPGRADE: Instead, a window or dialog must pop up that tells that data is invalid
+        return;
+      }
+
+      // If ID is valid but not yet registered
+      if (response.status === "not_found") {
+        alert("You are not registered yet. Please register first"); // <--- UPGRADE: Instead, a window must pop up.
+        await window.router("registration", response);
+        return;
+      }
+
+      // If ID is valid and registered, proceed with logging in/out
+      if (response.status === "success") {
+        if (response.action === "check_in") {
+          console.log("Checking in"); // <--- UPGRADE
+        } else {
+          console.log("Checking Out");
+        }
+
+        const todayTable = this.querySelector("app-todaytable");
+        if (todayTable && typeof todayTable.fetchAndRender === "function") {
+          todayTable.fetchAndRender();
+        } else {
+          console.warn(
+            "Could not find app-todaytable or fetchAndRender is not defined.",
+          );
+        }
+      }
     };
   }
 
