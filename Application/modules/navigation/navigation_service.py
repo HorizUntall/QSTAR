@@ -18,6 +18,10 @@ class NavigationService:
         if "/_admin/" in script_url and not self.auth_service.is_admin():
             return {"status": "unauthorized", "message": "Access Denied. Admin clearance required."}
         
+        # Auto Log out when going to non-admin pages
+        if "/_admin" not in script_url:
+            self.auth_service.logout()
+        
         return {
             "status": "success",
             "content": f"<app-{page_name}></app-{page_name}>",

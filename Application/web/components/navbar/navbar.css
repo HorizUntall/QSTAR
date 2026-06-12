@@ -12,7 +12,7 @@ app-navbar {
     min-height: 120px;
     height: auto;
 
-    background-image: url("../assets/images/navbar_bg.png");
+    background-image: url("../../assets/images/navbar_bg.png");
     background-size: auto 100%;
     background-repeat: repeat-x;
     background-position: left;
