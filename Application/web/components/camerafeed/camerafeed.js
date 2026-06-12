@@ -8,6 +8,10 @@ class CameraFeedComponent extends HTMLElement {
   connectedCallback() {
     this.innerHTML = this.layout();
     this.isStreaming = true;
+    async () => {
+      window.pywebview.scanner.resume_camera();
+    };
+
     this.streamCamera();
   }
 
@@ -15,6 +19,10 @@ class CameraFeedComponent extends HTMLElement {
     this.isStreaming = false;
     if (this.cameraAnimationId) {
       cancelAnimationFrame(this.cameraAnimationId);
+      async () => {
+        window.pywebview.scanner.pause_camera();
+      };
+
       this.cameraAnimationId = null;
     }
   }

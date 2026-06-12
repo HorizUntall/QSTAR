@@ -17,7 +17,7 @@ class HomepageComponent extends HTMLElement {
         await window.pywebview.api.processScannedCode(qrCodeData);
 
       if (response.status === "invalid") {
-        console.error("Invalid QR Data"); // <-- UPGRADE: Instead, a window or dialog must pop up that tells that data is invalid
+        console.error(response.message); // <-- UPGRADE: Instead, a window or dialog must pop up that tells that data is invalid
         return;
       }
 

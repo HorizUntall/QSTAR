@@ -2,6 +2,7 @@ from typing import Dict, Any
 
 def validate_and_parse(qr_data: str) -> Dict[str, Any]:
     scanned_str = str(qr_data).strip()
+    print(scanned_str)
 
     # If code is too short or too long
     if len(scanned_str) < 5 or len(scanned_str) > 25:
@@ -30,4 +31,4 @@ def validate_and_parse(qr_data: str) -> Dict[str, Any]:
             "id": scanned_str
         }
     
-    return {"is_valid": False, "reason": "Unknown identifier type. Received: '{qr_data}'"}
+    return {"is_valid": False, "reason": f"Unknown identifier type. Received: '{qr_data}'"}

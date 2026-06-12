@@ -19,7 +19,8 @@ class ScannerAPI:
         if not self._window: 
             return
         
-        escaped_code = json.dumps(code)
+        # escaped_code = json.dumps(code)
+        escaped_code = code
         js_code = f"window.dispatchEvent(new CustomEvent('qrDetected', {{detail: '{escaped_code}'}}));"
         
         self._window.evaluate_js(js_code)

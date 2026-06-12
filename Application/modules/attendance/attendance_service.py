@@ -46,20 +46,23 @@ class AttendanceService:
 
         # Find the current active log where log out is null
         recordId = self.attendance_repo.find_active_in_record(user_id=user.id, date_prefix=today_date)
-
-        # If recordId is None, try to find the previous log
-        # and check if the current log is within X minutes as the previous log out
-        recordId = self.attendance_repo.find_recent_out_record(user_id=user.id, cutoff_time=self.cutoff_time)
-
-        # If recordId is still None, then log a brand new entry as Check-In
-        if recordId is None:
-            self.attendance_repo.insert_time_in(user_id=user.id, user_type=user_type, time_in=current_time)
-            return {"status": "success", "action": "check_in", "timestamp": current_time}
-        
-        # Otherwise, update open track to Check-Out
-        else:
+        if recordId is not None:
             self.attendance_repo.update_time_out(record_id=recordId, time_out=current_time)
             return {"status": "success", "action": "check_out", "timestamp": current_time}
+
+        # If recordId is None, try to find the previous log
+        # and check if the current log is within X minutes as the previous log out.
+        # This will overwrite the previous logout
+        recordId = self.attendance_repo.find_recent_out_record(user_id=user.id, cutoff_time=self.cutoff_time)
+        if recordId is not None:
+            self.attendance_repo.update_time_out(record_id=recordId, time_out=None)
+            return {"status": "success", "action": "overwrite_checkout"}
+
+
+        # If recordId is still None, then log a brand new entry as Check-In
+        self.attendance_repo.insert_time_in(user_id=user.id, user_type=user_type, time_in=current_time)
+        return {"status": "success", "action": "check_in", "timestamp": current_time}
+        
         
     def get_today_attendance(self) -> list[Dict[str, Any]]:
         return self.attendance_repo.get_today_attendance()

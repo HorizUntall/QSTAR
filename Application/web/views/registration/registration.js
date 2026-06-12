@@ -70,7 +70,7 @@ class RegistrationViewComponent extends HTMLElement {
             <label for="lastName">Last Name</label>
             <input type="text" id="lastName" name="lastName" required>
             <label for="batch">Batch Year</label>
-            <input type="number" id="batchYear" name="batchYear" required>
+            <input type="number" id="batch" name="batch" required>
             <select id="sex" name="sex" required>
                 <option value="">Select an option...</option>
                 <option value="M">Male</option>

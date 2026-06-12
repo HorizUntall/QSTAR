@@ -38,7 +38,7 @@ class AttendanceRepository:
         )
         self.conn.commit()
 
-    def update_time_out(self, record_id: int, time_out: str) -> None:
+    def update_time_out(self, record_id: int, time_out: str | None) -> None:
         cursor = self.conn.cursor()
         cursor.execute(
             "UPDATE attendance SET time_out = ? WHERE id = ?",
