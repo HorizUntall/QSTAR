@@ -152,7 +152,8 @@ class DashboardRepository:
 
         # Query 2: Get Paginated Data
         data_query = cte + """
-        SELECT attendance_id, user_id, first_name, last_name, user_type, batch, time_in, time_out
+        SELECT attendance_id, user_id, first_name, last_name, user_type, batch, time_in,
+        COALESCE(time_out, '') as time_out  -- If time_out is NULL, return an empty string
         FROM FilteredAttendance
         ORDER BY time_in DESC
         LIMIT ? OFFSET ?

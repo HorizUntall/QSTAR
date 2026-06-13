@@ -49,8 +49,11 @@ class DashboardService:
     
     def get_processed_attendance_history(self, filters: DashboardFiltersDTO, page: int = 1, page_size: int = 100) -> Dict[str, Any]:
         """Returns processed attendance history using the filters"""
+        page = int(page)
+        page_size = int(page_size)
         
         df, total_records = self.repo.get_attendance_history(filters=filters, page=page, page_size=page_size)
+        
         return {
             "data": df.to_dict(orient="records"),
             "pagination": {
@@ -63,6 +66,8 @@ class DashboardService:
     
     def get_processed_registered_users(self, filters: DashboardFiltersDTO, page: int = 1, page_size: int = 100) -> Dict[str, Any]:
         """Returns processed registered users list using the filters"""
+        page = int(page)
+        page_size = int(page_size)
 
         df, total_records = self.repo.get_registered_users(filters=filters, page=page, page_size=page_size)
         return {

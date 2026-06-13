@@ -59,7 +59,7 @@ class AttendanceRepository:
         INNER JOIN CombinedUsers u ON a.user_id = u.id AND a.user_type = u.user_type
         WHERE a.time_in >= DATE('now', 'start of day', 'localtime')
             AND a.time_in < DATE('now', 'start of day', '+1 day', '+1 day')
-        ORDER BY a.time_in DESC;
+        ORDER BY a.time_in ASC;
         """
 
         cursor = self.conn.cursor()
