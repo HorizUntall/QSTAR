@@ -10,6 +10,7 @@ class DashboardViewComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = this.layout();
+
     this.setupEventListeners();
     this.fetchData();
   }
@@ -46,6 +47,32 @@ class DashboardViewComponent extends HTMLElement {
 
     this.querySelector("#settingsBtn").addEventListener("click", async () => {
       if (window.router) await window.router("settings");
+    });
+
+    const todayStr = new Date().toISOString().split("T")[0];
+    const timeRadios = this.querySelectorAll('input[name="time-filter"]');
+    const startDateInput = this.querySelector("#start-date");
+    const endDateInput = this.querySelector("#end-date");
+
+    timeRadios.forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        if (e.target.value === "today") {
+          // Force dates to today and auto-fetch empty dashboard representation
+          startDateInput.value = todayStr;
+          endDateInput.value = todayStr;
+          this.fetchData();
+        }
+      });
+    });
+
+    // Optional: If they modify custom dates while "Today" is checked, switch radio to "Custom"
+    [startDateInput, endDateInput].forEach((input) => {
+      input.addEventListener("input", () => {
+        const customRadio = this.querySelector(
+          'input[name="time-filter"][value="custom"]',
+        );
+        if (customRadio) customRadio.checked = true;
+      });
     });
   }
 
@@ -110,6 +137,7 @@ class DashboardViewComponent extends HTMLElement {
   }
 
   layout() {
+    const todayStr = new Date().toISOString().split("T")[0];
     return /*html*/ `
     <main class="dashboard-container">
       
@@ -126,9 +154,9 @@ class DashboardViewComponent extends HTMLElement {
           <span>Filter Options:</span>
           <label><input type="radio" name="time-filter" value="today" checked> Today</label>
           <label><input type="radio" name="time-filter" value="custom"> Custom Time Range</label>
-          <input type="date" id="start-date">
+          <input type="date" id="start-date" value="${todayStr}">
           <span>-</span>
-          <input type="date" id="end-date">
+          <input type="date" id="end-date" value="${todayStr}">
         </div>
         <div class="filter-group">
           <input type="text" id="search-name" placeholder="Name">
