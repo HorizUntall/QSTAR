@@ -1,6 +1,7 @@
 import "../../../components/navbar/navbar.js";
 import "../../../components/dashboardSummary/dashboardSummary.js";
 import "../../../components/dashboardTable/dashboardTable.js";
+import "../../../components/exportModal/exportModal.js"; // Added Modal Import
 
 class DashboardViewComponent extends HTMLElement {
   constructor() {
@@ -10,7 +11,6 @@ class DashboardViewComponent extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = this.layout();
-
     this.setupEventListeners();
     this.fetchData();
   }
@@ -57,7 +57,6 @@ class DashboardViewComponent extends HTMLElement {
     timeRadios.forEach((radio) => {
       radio.addEventListener("change", (e) => {
         if (e.target.value === "today") {
-          // Force dates to today and auto-fetch empty dashboard representation
           startDateInput.value = todayStr;
           endDateInput.value = todayStr;
           this.fetchData();
@@ -65,7 +64,6 @@ class DashboardViewComponent extends HTMLElement {
       });
     });
 
-    // Optional: If they modify custom dates while "Today" is checked, switch radio to "Custom"
     [startDateInput, endDateInput].forEach((input) => {
       input.addEventListener("input", () => {
         const customRadio = this.querySelector(
@@ -74,6 +72,33 @@ class DashboardViewComponent extends HTMLElement {
         if (customRadio) customRadio.checked = true;
       });
     });
+
+    // --- NEW: EXPORT BUTTON LOGIC ---
+    this.querySelector("#export-btn").addEventListener("click", () => {
+      const payload = this.getPayload();
+
+      // Capture the charts directly from the canvas as base64 images to send to Python
+      const chartImages = {
+        visits_chart: this.getChartBase64("visitsChart"),
+        top_goers_chart: this.getChartBase64("topGoersChart"),
+        batch_chart: this.getChartBase64("batchChart"),
+      };
+
+      payload.chart_images = chartImages;
+
+      // Open the modal and pass the payload
+      this.querySelector("app-export-modal").open(payload);
+    });
+  }
+
+  // Helper function to extract images from canvas
+  getChartBase64(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (canvas) {
+      // Return base64 string, stripping the "data:image/png;base64," prefix for backend cleanliness
+      return canvas.toDataURL("image/png").split(",")[1];
+    }
+    return null;
   }
 
   getPayload() {
@@ -104,10 +129,6 @@ class DashboardViewComponent extends HTMLElement {
 
   async fetchData() {
     const payload = this.getPayload();
-    console.log(
-      `Fetching parameters for unified tab scope [${this.currentTab}]:`,
-      payload,
-    );
 
     try {
       if (this.currentTab === "summary") {
@@ -190,6 +211,9 @@ class DashboardViewComponent extends HTMLElement {
           </dashboard-table>
         </div>
       </div>
+
+      <app-export-modal></app-export-modal>
+
     </main>
     `;
   }
