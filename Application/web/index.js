@@ -1,3 +1,5 @@
+import "./components/navbar/navbar.js";
+
 // Keep track of scripts that are already dynamically imported to save CPU cycles
 const loadedScripts = new Set();
 

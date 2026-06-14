@@ -12,7 +12,6 @@ class SettingsViewComponent extends HTMLElement {
 
   layout() {
     return /*html*/ `
-    <app-navbar></app-navbar>
     <main>
         <h2>This is settings page</h2>
         <!-- Test -->

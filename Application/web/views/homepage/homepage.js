@@ -68,7 +68,6 @@ class HomepageComponent extends HTMLElement {
   // HTML Code goes here
   layout() {
     return /*html*/ `
-    <app-navbar></app-navbar>
     <main>
       <div class="left">
         <div class="logo-background-wrap">

@@ -12,7 +12,6 @@ class AboutViewComponent extends HTMLElement {
 
   layout() {
     return /*html*/ `
-        <app-navbar></app-navbar>
         <main>
             <h2>This is about page</h2>
             <!-- Test -->

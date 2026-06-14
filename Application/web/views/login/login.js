@@ -29,7 +29,6 @@ class LoginComponent extends HTMLElement {
 
   layout() {
     return /*html*/ `
-    <app-navbar></app-navbar>
     <main>
         <h1>Hello World</h1>
         <button id="returnBtn">Return</button>
