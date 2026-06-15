@@ -24,3 +24,6 @@ class FacultyService:
 
         self.repo.create(faculty)
         return {"status": "success", "message": "Faculty registered successfully."}
+    
+    def get_faculty(self) -> Dict[str, Any]:
+        return self.repo.get_all()
