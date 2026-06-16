@@ -20,3 +20,11 @@ class StudentRepository:
             (student.id, student.first_name, student.last_name, student.batch, student.sex)
         )
         self.conn.commit()
+
+    def update(self, student: StudentDTO) -> None:
+        cursor = self.conn.cursor()
+        cursor.execute(
+            "UDPATE student SET first_name = ?, last_name = ?, batch = ?, sex = ? WHERE id = ?",
+            (student.first_name, student.last_name, student.batch, student.sex, student.id)
+        )
+        self.conn.commit()
