@@ -13,7 +13,7 @@ from modules.user.user_service import UserService
 
 class UserController:
     def __init__(self, user_service: UserService) -> None:
-        self._service = UserService
+        self._service = user_service
 
     def register_new_user(self, form_data: Dict[str, Any]) -> Dict[str, Any]:
         """This endpoint processes the user registration"""

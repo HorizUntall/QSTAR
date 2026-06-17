@@ -5,14 +5,15 @@ class RegistrationViewComponent extends HTMLElement {
     // Retrieve data passed by router
     this.viewData = window.routerState || {};
     window.routerState = undefined; // Cleanup
+    console.log(this.viewData);
+
+    // Extract nested data from meta.data if it exists
+    const userData = this.viewData.meta?.data || {};
 
     // This page needs qr code and user type.
-    // if viewData lacks any of them, return to homepage
+    // if userData lacks any of them, return to homepage
     if (
-      !(
-        Object.hasOwn(this.viewData, "id") &&
-        Object.hasOwn(this.viewData, "user_type")
-      )
+      !(Object.hasOwn(userData, "id") && Object.hasOwn(userData, "user_type"))
     ) {
       alert("An error occurred. Please try again"); // <-- IMPROVE
       (async () => {
@@ -20,10 +21,14 @@ class RegistrationViewComponent extends HTMLElement {
       })();
       return;
     }
+
+    // Store the extracted data for easier access throughout the component
+    this.extractedUserData = userData;
+
     this.innerHTML = this.layout();
 
     // If user is a faculty, then remove the input for batch
-    if (this.viewData.user_type === "faculty") {
+    if (this.extractedUserData.user_type === "faculty") {
       document.getElementById("sex").remove();
     }
 
@@ -40,13 +45,13 @@ class RegistrationViewComponent extends HTMLElement {
       let form = document.forms["registrationForm"];
 
       const form_data = {
-        id: this.viewData.id,
-        user_type: this.viewData.user_type,
+        id: this.extractedUserData.id,
+        user_type: this.extractedUserData.user_type,
         first_name: form["firstName"].value,
         last_name: form["lastName"].value,
         sex: form["sex"].value,
       };
-      if (this.viewData.user_type === "student") {
+      if (this.extractedUserData.user_type === "student") {
         form_data.batch = form["batch"].value;
       }
 
