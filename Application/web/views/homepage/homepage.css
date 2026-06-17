@@ -9,8 +9,8 @@ app-homepage {
     gap: 70px;
     background-color: #ffffff;
     align-items: flex-start; /* Aligns top edges of left and right columns perfectly */
-
     flex-wrap: wrap;
+    position: relative;
   }
 
   /* --- LEFT COLUMN --- */
@@ -54,5 +54,86 @@ app-homepage {
     flex-direction: column;
     gap: 25px;
     justify-content: flex-start;
+  }
+
+  /* --- UPGRADE: STATUS FLASH & NOTIFICATION MODAL --- */
+
+  /* Fullscreen Flash Overlay */
+  .status-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.3s ease,
+      background-color 0.5s ease;
+  }
+
+  .status-overlay.active {
+    opacity: 1;
+  }
+
+  /* Soft Pastels */
+  .status-overlay.flash-check-in {
+    background-color: rgba(212, 239, 216, 0.45); /* Soft Pastel Mint Green */
+  }
+  .status-overlay.flash-check-out {
+    background-color: rgba(244, 194, 194, 0.45); /* Soft Pastel Coral/Rose */
+  }
+
+  /* Popup Dialog Card */
+  .status-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%) scale(0.95);
+    background: #ffffff;
+    padding: 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+    min-width: 300px;
+    border-left: 8px solid #ccc;
+  }
+
+  .status-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* Dialog Border Accents */
+  .status-modal.modal-success {
+    border-left-color: #87d37c;
+  } /* Pastel Green */
+  .status-modal.modal-info {
+    border-left-color: #f19066;
+  } /* Pastel Coral */
+  .status-modal.modal-error {
+    border-left-color: #f76c6c;
+  } /* Pastel Red */
+  .status-modal.modal-warning {
+    border-left-color: #f5cd79;
+  } /* Pastel Yellow */
+
+  .status-modal h3 {
+    margin: 0 0 8px 0;
+    font-family: sans-serif;
+    color: #333;
+  }
+
+  .status-modal p {
+    margin: 0;
+    font-family: sans-serif;
+    color: #666;
+    font-size: 0.95rem;
   }
 }

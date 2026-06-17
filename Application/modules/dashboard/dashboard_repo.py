@@ -40,7 +40,12 @@ class DashboardRepository:
 
         if filters.end_date:
             conditions.append("a.time_in <= ?")
-            params.append(filters.end_date)
+            # params.append(filters.end_date)
+            # If it's just a date, append the end-of-day timestamp
+            if len(filters.end_date) == 10: 
+                params.append(f"{filters.end_date} 23:59:59")
+            else:
+                params.append(filters.end_date)
 
         if filters.search_name:
             conditions.append("(u.first_name LIKE ? OR u.last_name LIKE ?)")
