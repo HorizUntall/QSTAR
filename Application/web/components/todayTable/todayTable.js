@@ -22,9 +22,18 @@ class TodayTableComponent extends HTMLElement {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:gray;">Updating records...</td></tr>`;
       }
 
-      // Fetch fresh data from Python DB and render the updated rows
-      const data = await window.pywebview.api.get_today_attendance();
-      this.renderRows(data);
+      // Fetch fresh data from Python DB
+      const response =
+        await window.pywebview.api.attendance.get_today_attendance();
+
+      // Handle Python application-level errors safely
+      if (response && response.status === "success") {
+        const attendanceData = response.data?.today_attendance || [];
+        this.renderRows(attendanceData);
+      } else {
+        const errMsg = response?.message || "Unknown error occurred.";
+        throw new Error(errMsg);
+      }
     } catch (error) {
       console.error("Failed to load today's attendance:", error);
       const tbody = this.querySelector("tbody");

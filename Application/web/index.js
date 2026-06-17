@@ -6,7 +6,7 @@ const loadedScripts = new Set();
 async function router(pageName, data = undefined) {
   try {
     // Get layout data from Python
-    const response = await window.pywebview.api.changePage(pageName);
+    const response = await window.pywebview.api.layout.changePage(pageName);
 
     if (response.status === "success") {
       const { content, script_url } = response;
@@ -39,7 +39,7 @@ window.router = router;
 // Global scope expose for view changes
 window.addEventListener("pywebviewready", async () => {
   try {
-    const assets = await window.pywebview.api.get_boot_assets();
+    const assets = await window.pywebview.api.layout.get_boot_assets();
 
     assets.css_files.forEach((cssUrl) => {
       if (!document.querySelector(`link[href="${cssUrl}"]`)) {

@@ -6,7 +6,7 @@ from modules.student.student_service import StudentService
 from modules.student.student_models import StudentDTO
 
 class StudentController:
-    def __int__(self, student_service: StudentService) -> None:
+    def __init__(self, student_service: StudentService) -> None:
         self._service = student_service
 
     # Public <-- Commented Out since not being used for now

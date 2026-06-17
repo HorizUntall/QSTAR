@@ -1,26 +1,25 @@
 from typing import Dict, Any
-from core.session import SessionManager
+
+from core.exceptions import UnauthorizedException
 from modules.auth.auth_service import AuthService
 
 class AuthController:
-    def __init__(self, auth_service: AuthService, session_manager: SessionManager) -> None:
-        self._auth_service = auth_service
-        self._session_manager = session_manager
+    def __init__(self, auth_service: AuthService) -> None:
+        self._service = auth_service
 
-    def login_admin(self, password: str) -> Dict[str, Any]:
-        """Bridge endpoint: window.pywebview.api.auth.login_admin()"""
-        if not password:
-            return {"status": "error", "message": "Password cannot be empty."}
-        
-        is_valid = self._auth_service.verify_admin_password(input_pw=password)
+    # Public
+    def login(self, password: str) -> Dict[str, Any]:
+        try:
+            self._service.login(password)
+            return {"status": "success", "message": "Logged in successfully"}
+        except UnauthorizedException as e:
+            return {"status": "error", "message": e.message}
 
-        if is_valid:
-            self._session_manager.set_admin_authenticated(True)
-            return {"status": "success", "message": "Authenticated successfully"}
-        
-        return {"status": "error", "message": "Incorrect password."}
-    
-    def logout(self, admin) -> Dict[str, Any]:
-        """Bridge endpoint: window.pywebview.api.auth.logout_admin()"""
-        self._session_manager.clear()
-        return {"status": "success", "message": "Logged out successfully."}
+    # Public 
+    def logout(self) -> Dict[str, Any]:
+        self._service.logout()
+        return {"status": "success"}
+
+    # Public
+    def get_status(self):
+        return {"is_authenticated": self._service.is_authenticated()}

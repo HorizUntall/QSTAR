@@ -19,3 +19,17 @@ class UserNotRegisteredException(BridgeException):
     """Exception for when a user is not registered"""
     def __init__(self, message: str, meta = None) -> None:
         super().__init__(status="not_found", message=message, meta=meta)
+
+class UnauthorizedException(Exception):
+    """Raised when authentication fails or is missing."""
+    def __init__(self, message: str):
+        self.status = "unauthorized"
+        self.message = message
+        super().__init__(self.message)
+
+class ViewNotFoundException(Exception):
+    """Raised when a structural view is missing"""
+    def __init__(self, message: str):
+        self.status = "not_found"
+        self.message = message
+        super().__init__(self.message)

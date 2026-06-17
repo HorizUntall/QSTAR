@@ -56,7 +56,7 @@ class LoginComponent extends HTMLElement {
     errorMsgElement.classList.remove("visible"); // Reset error text state
 
     try {
-      const response = await window.pywebview.api.loginAdmin(password);
+      const response = await window.pywebview.api.auth.login(password);
 
       if (response.status === "success") {
         await window.router("dashboard");

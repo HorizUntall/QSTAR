@@ -51,7 +51,8 @@ class RegistrationViewComponent extends HTMLElement {
       }
 
       // Call API
-      const response = await window.pywebview.api.register_new_user(form_data);
+      const response =
+        await window.pywebview.api.user.register_new_user(form_data);
       if (response === "success") {
         alert("Success"); // <-- IMPROVE
         window.router("homepage");

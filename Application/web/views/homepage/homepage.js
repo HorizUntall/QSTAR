@@ -14,7 +14,7 @@ class HomepageComponent extends HTMLElement {
       console.log("QR caught by component logic:", qrCodeData);
 
       const response =
-        await window.pywebview.api.processScannedCode(qrCodeData);
+        await window.pywebview.api.attendance.processScannedCode(qrCodeData);
 
       if (response.status === "invalid") {
         console.error(response.message); // <-- UPGRADE: Instead, a window or dialog must pop up that tells that data is invalid

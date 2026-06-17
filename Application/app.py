@@ -5,27 +5,41 @@ from threading import Event, Thread
 
 import webview
 
-from modules.api.mainAPI import Api
-from modules.scanner.qrscanner import QRCodeScanner
-from modules.config.logger import setup_logger
+# Core 
+from core.database.database import init_db, get_db 
+from core.log.logger import setup_logger
+
+from core.renderer.asset_service import AssetResolverService
+from core.renderer.layout_service import LayoutService
+from core.renderer.layout_controller import LayoutController
+
+from core.api import API
+
+# Modules
+from modules.auth.auth_controller import AuthController
+from modules.auth.auth_service import AuthService
 
 from modules.student.student_repo import StudentRepository
 from modules.student.student_service import StudentService
+from modules.student.student_controller import StudentController
 
 from modules.faculty.faculty_repo import FacultyRepository
 from modules.faculty.faculty_service import FacultyService
+from modules.faculty.faculty_controller import FacultyController
 
 from modules.attendance.attendance_repo import AttendanceRepository
 from modules.attendance.attendance_service import AttendanceService
+from modules.attendance.attendance_controller import AttendanceController
+
+from modules.user.user_service import UserService
+from modules.user.user_controller import UserController
 
 from modules.dashboard.dashboard_repo import DashboardRepository
 from modules.dashboard.dashboard_service import DashboardService
+from modules.dashboard.dashboard_controller import DashboardController
 
-from modules.auth.auth_service import AuthService
-from modules.navigation.navigation_service import NavigationService
-from modules.config.asset_manifest_service import AssetManifestService
-
-from modules.database.connection import init_db, get_db 
+from modules.scanner.qrscanner import QRCodeScanner
+from modules.scanner.scanner_controller import ScannerController
 
 class QSTARApp:
 
@@ -52,40 +66,54 @@ class QSTARApp:
         # Student Module
         self.student_repo = StudentRepository(db_conn=db_conn)
         self.student_service = StudentService(student_repo=self.student_repo)
+        self.student_controller = StudentController(student_service=self.student_service)
 
         # Faculty Module
         self.faculty_repo = FacultyRepository(db_conn=db_conn)
         self.faculty_service = FacultyService(faculty_repo=self.faculty_repo)
+        self.faculty_controller = FacultyController(faculty_service=self.faculty_service)
 
         # Attendance Module
         self.attendance_repo = AttendanceRepository(db_conn=db_conn)
         self.attendance_service = AttendanceService(attendance_repo=self.attendance_repo,
                                                     student_repo=self.student_repo,
                                                     faculty_repo=self.faculty_repo)
+        self.attendance_controller = AttendanceController(attendance_service=self.attendance_service)
+
+        # User Module
+        self.user_service = UserService(student_service=self.student_service,
+                                        faculty_service=self.faculty_service)
+        self.user_controller = UserController(user_service=self.user_service)
 
         # Dashboard Module
         self.dashboard_repo = DashboardRepository(db_conn=db_conn)
         self.dashboard_service = DashboardService(dashboard_repo=self.dashboard_repo)
+        self.dashboard_controller = DashboardController(dashboard_service=self.dashboard_service)
 
         # Auth Module
         self.auth_service = AuthService()
+        self.auth_controller = AuthController(auth_service=self.auth_service)
 
-        # Config Module
-        self.asset_manifest_service = AssetManifestService(web_dir=self.web_dir)
+        # Scanner Module
+        self.scanner_controller = ScannerController(qrscanner=self.qrscanner)
 
-        # Navigation Module
-        self.nav_service = NavigationService(manifest_service=self.asset_manifest_service,
-                                             auth_service=self.auth_service)
+        # Layout Module (Core)
+        self.asset_service = AssetResolverService(web_dir=self.web_dir)
+        self.layout_service = LayoutService(asset_service=self.asset_service)
+        self.layout_controller = LayoutController(layout_service=self.layout_service)
+
 
         # Load Main API
-        self.api = Api(qrscanner=self.qrscanner,
-                       attendance_service=self.attendance_service,
-                       student_service=self.student_service,
-                       faculty_service=self.faculty_service,
-                       dashboard_service=self.dashboard_service,
-                       auth_service=self.auth_service,
-                       manifest_service=self.asset_manifest_service,
-                       nav_service=self.nav_service)
+        self.api = API(
+            layout_controller=self.layout_controller,
+            student_controller=self.student_controller,
+            faculty_controller=self.faculty_controller,
+            attendance_controller=self.attendance_controller,
+            user_controller=self.user_controller,
+            dashboard_controller=self.dashboard_controller,
+            scanner_controller=self.scanner_controller,
+            auth_controller=self.auth_controller
+        )
 
     def check_for_updates(self) -> None:
         ...
@@ -104,7 +132,7 @@ class QSTARApp:
         """Fires automatically on changes ONLY when devMode is active."""
         for change in watchfiles.watch(".", stop_event=self.stop_watcher_event):
             if self.window is not None:
-                self.asset_manifest_service._generate_manifest()
+                self.asset_service.initialize_manifest()
                 self.window.evaluate_js("window.location.reload()")
 
     def run(self) -> None:

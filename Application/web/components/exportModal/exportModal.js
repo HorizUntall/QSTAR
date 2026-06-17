@@ -59,7 +59,9 @@ class ExportModalComponent extends HTMLElement {
 
       try {
         const response =
-          await window.pywebview.api.trigger_data_export(finalPayload);
+          await window.pywebview.api.dashboard.trigger_data_export(
+            finalPayload,
+          );
 
         if (response.status === "success") {
           statusMsg.textContent =

@@ -132,11 +132,13 @@ class DashboardViewComponent extends HTMLElement {
 
     try {
       if (this.currentTab === "summary") {
-        const res = await window.pywebview.api.get_dashboard_data(payload);
+        const res =
+          await window.pywebview.api.dashboard.get_dashboard_data(payload);
         if (res.status === "success")
           this.querySelector("dashboard-summary").updateData(res.data);
       } else if (this.currentTab === "history") {
-        const res = await window.pywebview.api.get_attendance_history(payload);
+        const res =
+          await window.pywebview.api.dashboard.get_attendance_history(payload);
         if (res.status === "success") {
           this.querySelector("#history-table").updateTable(
             res.data.data,
@@ -144,7 +146,8 @@ class DashboardViewComponent extends HTMLElement {
           );
         }
       } else if (this.currentTab === "registered") {
-        const res = await window.pywebview.api.get_registered_users(payload);
+        const res =
+          await window.pywebview.api.dashboard.get_registered_users(payload);
         if (res.status === "success") {
           this.querySelector("#registered-table").updateTable(
             res.data.data,
