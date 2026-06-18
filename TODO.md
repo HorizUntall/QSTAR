@@ -2,10 +2,11 @@
 
 ## Progress
 
-- [ ] About Page
-- [ ] Dashboard Page
-- [ ] Homepage Page
-- [ ] Settings Page
+- [x] About Page
+- [x] Dashboard Page
+- [x] Homepage Page
+- [x] Settings Page
+- [ ] Security
 
 ## Features Needed to be Added
 

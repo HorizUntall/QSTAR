@@ -2,12 +2,14 @@ import logging
 from pathlib import Path
 import watchfiles
 from threading import Event, Thread
+import sys
 
 import webview
 
 # Core 
 from core.database.database import init_db, get_db 
 from core.log.logger import setup_logger
+from core.updates import AppUpdater
 
 from core.renderer.asset_service import AssetResolverService
 from core.renderer.layout_service import LayoutService
@@ -44,7 +46,13 @@ from modules.scanner.scanner_controller import ScannerController
 class QSTARApp:
 
     def __init__(self, devMode=False) -> None:
-        self.root_dir = Path(__file__).resolve().parent
+
+        # Check if running as an Auto PY to EXE bundle
+        if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+            self.root_dir = Path(sys._MEIPASS)  # Points straight to _internal/
+        else:
+            self.root_dir = Path(__file__).resolve().parent
+
         self.web_dir = self.root_dir / "web"
         self.indexPage = self.web_dir / "index.html"
         self.qrscanner = QRCodeScanner(vidSrc=2)
@@ -116,7 +124,15 @@ class QSTARApp:
         )
 
     def check_for_updates(self) -> None:
-        ...
+        if self.devMode:
+            return
+        
+        updater = AppUpdater(
+            window=self.window,
+            root_dir=self.root_dir,
+            repo_slug="HorizUntall/QSTAR"
+        )
+        updater.run_check()
 
     def on_closing(self):
         print("Closing...")
@@ -140,7 +156,8 @@ class QSTARApp:
         self.api._setWindow(self.window)
         self.qrscanner.start_scanning()
 
-        self.window.events.closing += self.on_closing
+        # self.window.events.closing += self.on_closing
+        self.window.events.shown += lambda: Thread(target=self.check_for_updates, daemon=True).start()
 
         if self.devMode:
             self.watcher_thread = Thread(target=self.watch_and_reload)
