@@ -28,6 +28,6 @@ class FacultyRepository:
     
     def update(self, faculty: FacultyDTO) -> None:
         cursor = self.conn.cursor()
-        cursor.execute("UDPATE faculty SET first_name = ?, last_name = ?, sex = ? WHERE id = ?", 
+        cursor.execute("UPDATE faculty SET first_name = ?, last_name = ?, sex = ? WHERE id = ?", 
                        (faculty.first_name, faculty.last_name, faculty.sex, faculty.id))
         self.conn.commit()

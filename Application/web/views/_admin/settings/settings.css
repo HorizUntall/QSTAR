@@ -1,2 +1,333 @@
 app-settings {
+  display: block;
+  font-family: sans-serif;
+  background-color: #f4f4f4;
+
+  .container {
+    display: flex;
+    height: calc(100vh - 48px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Flexbox column orientation prevents layout breakage on low-resolution displays */
+  .sidebar {
+    background-color: #f4f4f4;
+    width: 220px;
+    min-width: 200px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #e0e0e0;
+    box-sizing: border-box;
+  }
+
+  .sidebar-nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .sidebar .tab {
+    display: block;
+    background-color: transparent;
+    border: none;
+    padding: 12px 10px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: normal;
+    font-style: normal;
+    transition: background-color 0.2s ease;
+  }
+
+  .sidebar .tab:hover {
+    background-color: #ddd;
+  }
+
+  .sidebar .tab.active {
+    background-color: #ddd;
+    color: #1b8786;
+    font-weight: bold;
+  }
+
+  /* Responsive Bottom Button Style Adaptation */
+  #returnToDashboardButton {
+    border-width: 0;
+    background-color: #ddd;
+    padding: 12px 15px;
+    border-radius: 20px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: normal;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+  }
+
+  #returnToDashboardButton:hover {
+    background-color: #ccc;
+  }
+
+  .content {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto; /* Content zone scrolls independently if screen resolution drops */
+  }
+
+  .tab-content {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    width: auto;
+    padding: 10px 0 10px 10px;
+  }
+
+  .tab-content h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  /* Adjusted category configurations to flow flexibly on narrower browser viewports */
+  .category-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px; /* Adapts cleanly across split view configurations */
+    height: auto;
+    padding: 15px 20px;
+    border-width: 0;
+    margin-bottom: 15px;
+    text-align: left;
+    border-radius: 10px;
+    box-shadow: 0px 3px 5px rgb(207, 205, 205);
+    position: relative;
+    cursor: pointer;
+    background-color: #fff;
+  }
+
+  .category-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 15px;
+  }
+
+  .category-text-container h5 {
+    font-size: 1rem;
+    margin: 0 0 4px 0;
+    font-weight: bold;
+  }
+
+  .category-subheader {
+    font-size: 0.85rem;
+    color: #666;
+    cursor: pointer;
+    line-height: 1.3;
+  }
+
+  .button-sign {
+    font-size: 13px;
+    color: #858383;
+    flex-shrink: 0;
+  }
+
+  .category-button:hover {
+    color: rgb(62, 196, 160);
+    background-color: rgba(163, 225, 211, 0.286);
+  }
+
+  /* Modals Component Interfaces */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 10vh auto;
+    padding: 25px 40px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px; /* Locks scale beautifully onto small UI frame bounds */
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+  }
+
+  .modal-header {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  .password-inputs {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  .password-inputs label {
+    margin-left: 5px;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  #old-password,
+  #new-password,
+  #new-password-confirmation {
+    width: 100%;
+    max-width: 350px;
+    height: 35px;
+    padding: 0 15px;
+    border-radius: 15px;
+    border-width: 0px;
+    background-color: rgba(0, 0, 0, 0.08);
+    margin-bottom: 8px;
+    box-sizing: border-box;
+  }
+
+  #student-id-input {
+    height: 35px;
+    width: 100%;
+    max-width: 200px;
+    padding: 0 15px;
+    border-radius: 15px;
+    border-width: 0px;
+    background-color: rgba(0, 0, 0, 0.08);
+    margin-bottom: 8px;
+    box-sizing: border-box;
+  }
+
+  .student-info {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+  }
+
+  .student-info input,
+  .student-info select {
+    height: 35px;
+    padding: 0 15px;
+    border-radius: 15px;
+    border-width: 0px;
+    background-color: rgba(0, 0, 0, 0.08);
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .student-info .saveButton {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .close-button {
+    float: right;
+    font-size: 20px;
+    border-width: 0;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .saveButton {
+    margin-top: 15px;
+    padding: 10px 24px;
+    border-width: 0;
+    border-radius: 15px;
+    background-color: rgb(62, 196, 160);
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  /* Faculty Presentation Structures Grid Layout CSS */
+  #content-faculties {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    box-sizing: border-box;
+  }
+
+  #content-faculties label {
+    margin-bottom: 15px;
+  }
+
+  .table-container {
+    flex: 1;
+    max-height: 65vh;
+    overflow: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    background: #fff;
+  }
+
+  th,
+  td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95rem;
+  }
+
+  tr:hover {
+    background-color: #dcebe9;
+  }
+
+  .edit-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .edit-btn:hover {
+    background-color: #45a049;
+  }
+
+  /* Isolated Modal Processing Configurations Overlap Overlay rules */
+  .edit-form.modal {
+    background-color: rgba(0, 0, 0, 0.4);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .edit-form input {
+    padding: 10px;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #fafafa;
+  }
+
+  .edit-form label {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
 }

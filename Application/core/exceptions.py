@@ -27,6 +27,13 @@ class UnauthorizedException(Exception):
         self.message = message
         super().__init__(self.message)
 
+class PasswordMismatchException(Exception):
+    """Exception when the repeat password don't match the original password"""
+    def __init__(self, message: str):
+        self.status = "invalid"
+        self.message = message
+        super().__init__(self.message)
+
 class ViewNotFoundException(Exception):
     """Raised when a structural view is missing"""
     def __init__(self, message: str):

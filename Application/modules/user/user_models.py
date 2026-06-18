@@ -37,7 +37,7 @@ class UserDTO:
         self.batch = str(self.batch).strip()
         self.sex = str(self.sex).strip().upper()
 
-        if not self.batch.isdigit():
+        if not self.batch.isdigit() and self.user_type == UserTypeEnum.STUDENT.value:
             raise BadRequestException(message="Invalid batch format")
         
         if self.sex not in [choice.value for choice in SexEnum]:

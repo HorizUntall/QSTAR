@@ -73,3 +73,9 @@ class StudentController:
                 "message": e.message,
                 "meta": e.meta
             }
+        
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": f"Unexpected error occured: {e}"
+            }
