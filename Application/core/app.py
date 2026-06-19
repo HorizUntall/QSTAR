@@ -50,9 +50,12 @@ class QSTARApp:
 
         # Check if running as an Auto PY to EXE bundle
         if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-            self.root_dir = Path(sys._MEIPASS)  # Points straight to _internal/
+            # In the EXE, sys._MEIPASS points directly to '_internal/' 
+            # and all your assets (web, core, modules) live straight inside it.
+            self.root_dir = Path(sys._MEIPASS)  
         else:
-            self.root_dir = Path(__file__).resolve().parent
+            # Locally, __file__ is inside 'core/', so we go up two levels to reach the root project directory
+            self.root_dir = Path(__file__).resolve().parent.parent
 
         self.web_dir = self.root_dir / "web"
         self.indexPage = self.web_dir / "index.html"
@@ -167,8 +170,3 @@ class QSTARApp:
             webview.start(debug=True)
         else:
             webview.start()
-
-if __name__ == "__main__":
-    setup_logger()
-    app = QSTARApp(devMode=True)
-    app.run()
