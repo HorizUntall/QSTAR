@@ -3,6 +3,7 @@ from pathlib import Path
 import watchfiles
 from threading import Event, Thread
 import sys
+import numpy as np
 
 import webview
 
