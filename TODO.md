@@ -6,7 +6,7 @@
 - [x] Dashboard Page
 - [x] Homepage Page
 - [x] Settings Page
-- [ ] Security
+- [x] Security
 - [ ] Show version on frontend
 
 ## Features Needed to be Added
