@@ -116,11 +116,26 @@ class AppLauncher:
 
                 # --- SAFE OVERWRITE HANDLING ---
                 # Delete the old engine core executable first to ensure it's unblocked
-                if self.main_app_exe.exists():
-                    try:
-                        os.remove(self.main_app_exe)
-                    except Exception:
-                        pass # Ignore if Windows is delaying file handle disposal
+                # if self.main_app_exe.exists():
+                #     try:
+                #         os.remove(self.main_app_exe)
+                #     except Exception:
+                #         pass # Ignore if Windows is delaying file handle disposal
+
+                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                    # Look inside the zip file to see what files are inside it
+                    zipped_file_list = zip_ref.namelist()
+                    
+                    # ONLY delete the old core engine file if the incoming update actually contains a new one!
+                    if "QSTAR_Engine.exe" in zipped_file_list:
+                        if self.main_app_exe.exists():
+                            try:
+                                os.remove(self.main_app_exe)
+                            except Exception:
+                                pass
+                    
+                    # Extract the update package cleanly over your application directory
+                    zip_ref.extractall(self.install_dir)
 
                 # Extract update package directly over the current running directory layout.
                 # ZipFile automatically overwrites existing files inside _internal/ smoothly.
