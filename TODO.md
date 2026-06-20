@@ -7,6 +7,7 @@
 - [x] Homepage Page
 - [x] Settings Page
 - [ ] Security
+- [ ] Show version on frontend
 
 ## Features Needed to be Added
 

@@ -3,5 +3,6 @@ from core.log.logger import setup_logger
 
 if __name__ == "__main__":
     setup_logger()
-    app = QSTARApp(devMode=True)
+    # We pass devMode=False since production deployments use the Launcher loop
+    app = QSTARApp(devMode=False)
     app.run()

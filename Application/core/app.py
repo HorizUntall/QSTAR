@@ -160,8 +160,7 @@ class QSTARApp:
         self.api._setWindow(self.window)
         self.qrscanner.start_scanning()
 
-        # self.window.events.closing += self.on_closing
-        self.window.events.shown += lambda: Thread(target=self.check_for_updates, daemon=True).start()
+        self.window.events.closing += self.on_closing
 
         if self.devMode:
             self.watcher_thread = Thread(target=self.watch_and_reload)
