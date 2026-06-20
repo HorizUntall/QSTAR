@@ -10,7 +10,6 @@ import webview
 # Core 
 from core.database.database import init_db, get_db 
 from core.log.logger import setup_logger
-from core.updates import AppUpdater
 
 from core.renderer.asset_service import AssetResolverService
 from core.renderer.layout_service import LayoutService
@@ -126,17 +125,6 @@ class QSTARApp:
             scanner_controller=self.scanner_controller,
             auth_controller=self.auth_controller
         )
-
-    def check_for_updates(self) -> None:
-        if self.devMode:
-            return
-        
-        updater = AppUpdater(
-            window=self.window,
-            root_dir=self.root_dir,
-            repo_slug="HorizUntall/QSTAR"
-        )
-        updater.run_check()
 
     def on_closing(self):
         print("Closing...")
