@@ -40,3 +40,10 @@ class ViewNotFoundException(Exception):
         self.status = "not_found"
         self.message = message
         super().__init__(self.message)
+
+class VersionFileNotFoundException(Exception):
+    """Raised when the version.json can't be retrieved/found"""
+    def __init__(self, message: str):
+        self.status = "not_found"
+        self.message = message
+        super().__init__(self.message)

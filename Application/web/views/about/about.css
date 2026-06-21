@@ -42,6 +42,16 @@ app-about .about-divider {
   border-top: 1px solid #1b8786;
 }
 
+/* Added for styling the version layout */
+app-about .about-footer {
+  margin-left: 10vw;
+  margin-right: 10vw;
+  padding: 2vh;
+  color: #1b8786;
+  font-size: 1.8vh;
+  opacity: 0.8; /* Subtle treatment for metadata text */
+}
+
 app-about .test-actions {
   margin-left: 10vw;
   padding: 2vh;

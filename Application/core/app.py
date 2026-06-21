@@ -10,6 +10,7 @@ import webview
 # Core 
 from core.database.database import init_db, get_db 
 from core.log.logger import setup_logger
+from core import version
 
 from core.renderer.asset_service import AssetResolverService
 from core.renderer.layout_service import LayoutService
@@ -43,6 +44,9 @@ from modules.dashboard.dashboard_controller import DashboardController
 from modules.scanner.qrscanner import QRCodeScanner
 from modules.scanner.scanner_controller import ScannerController
 
+from modules.version.version_service import VersionService
+from modules.version.version_controller import VersionController
+
 class QSTARApp:
 
     def __init__(self, devMode=False) -> None:
@@ -51,10 +55,12 @@ class QSTARApp:
         if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
             # In the EXE, sys._MEIPASS points directly to '_internal/' 
             # and all your assets (web, core, modules) live straight inside it.
-            self.root_dir = Path(sys._MEIPASS)  
+            self.root_dir = Path(sys._MEIPASS)
+            version.version_path = self.root_dir / "version.json"
         else:
             # Locally, __file__ is inside 'core/', so we go up two levels to reach the root project directory
             self.root_dir = Path(__file__).resolve().parent.parent
+            version.version_path = self.root_dir / "version.json"
 
         self.web_dir = self.root_dir / "web"
         self.indexPage = self.web_dir / "index.html"
@@ -113,6 +119,9 @@ class QSTARApp:
         self.layout_service = LayoutService(asset_service=self.asset_service)
         self.layout_controller = LayoutController(layout_service=self.layout_service)
 
+        # Version Module
+        self.version_service = VersionService()
+        self.version_controller = VersionController(version_service=self.version_service)
 
         # Load Main API
         self.api = API(
@@ -123,7 +132,8 @@ class QSTARApp:
             user_controller=self.user_controller,
             dashboard_controller=self.dashboard_controller,
             scanner_controller=self.scanner_controller,
-            auth_controller=self.auth_controller
+            auth_controller=self.auth_controller,
+            version_controller=self.version_controller
         )
 
     def on_closing(self):

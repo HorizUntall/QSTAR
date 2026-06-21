@@ -4,17 +4,57 @@ class AboutViewComponent extends HTMLElement {
   connectedCallback() {
     this.innerHTML = this.layout();
 
-    const testBtn = document.getElementById("testBtn");
-    if (testBtn) {
-      testBtn.addEventListener("click", async () => {
-        await window.router("registration");
+    // Fetch and display the version
+    this.displayVersion();
+  }
+
+  async displayVersion() {
+    const versionEl = this.querySelector("#app-version");
+    if (!versionEl) return;
+
+    // Helper function to safely invoke the pywebview API
+    const fetchVersion = async () => {
+      try {
+        // Corrected safety check matching your endpoint structure: window.pywebview.api.version
+        if (
+          window.pywebview &&
+          window.pywebview.api &&
+          window.pywebview.api.version &&
+          typeof window.pywebview.api.version.get_version === "function"
+        ) {
+          const response = await window.pywebview.api.version.get_version();
+
+          if (response && response.status === "success" && response.data) {
+            versionEl.textContent = `Version ${response.data.version}`;
+          } else {
+            versionEl.textContent = "Version: Error loading version details";
+          }
+          return true; // Successfully ran
+        }
+        return false; // API not ready yet
+      } catch (error) {
+        console.error("Failed to fetch version:", error);
+        versionEl.textContent = "Version: Load failed";
+        return true;
+      }
+    };
+
+    // 1. Try running immediately
+    const success = await fetchVersion();
+
+    // 2. Fallback: If pywebview isn't fully initialized yet, listen for its ready event
+    if (!success) {
+      window.addEventListener("pywebviewready", async () => {
+        const retrySuccess = await fetchVersion();
+        if (!retrySuccess) {
+          versionEl.textContent = "Version: API not available";
+        }
       });
     }
   }
 
   layout() {
     return /*html*/ `
-
         <main class="about-container">
             <h1>ABOUT</h1>
             <hr class="about-divider">
@@ -49,7 +89,7 @@ class AboutViewComponent extends HTMLElement {
             <p>
                 <b>Raphael Khandie Bihag</b>, the Front-End Developer, breathes life into the visual and interactive elements of 
                 software applications. He transforms project requirements into user interfaces (UIs) that are both aesthetically 
-                pleasing and user-friendly. Raphael's expertise lies in crafting user journeys, implementing responsive design for 
+                pleing and user-friendly. Raphael's expertise lies in crafting user journeys, implementing responsive design for 
                 various screen sizes, and ensuring seamless user interaction. He collaborates closely with designers and back-end 
                 developers to bridge the gap between vision and functionality, while staying on top of the latest front-end technologies 
                 to deliver exceptional user experiences.
@@ -75,9 +115,10 @@ class AboutViewComponent extends HTMLElement {
                 that the project's goals and objectives are met successfully.
             </p>
 
-            <div class="test-actions">
-               <button id="testBtn">Switch page</button>
+            <div class="about-footer">
+               <span id="app-version">Loading version...</span>
             </div>
+
         </main>
         `;
   }

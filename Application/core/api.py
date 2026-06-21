@@ -8,9 +8,9 @@ from modules.faculty.faculty_controller import FacultyController
 from modules.attendance.attendance_controller import AttendanceController
 from modules.user.user_controller import UserController
 from modules.dashboard.dashboard_controller import DashboardController
-
 from modules.scanner.scanner_controller import ScannerController
 from modules.auth.auth_controller import AuthController
+from modules.version.version_controller import VersionController
 
 class API:
     def __init__(self,
@@ -21,7 +21,8 @@ class API:
                  user_controller: UserController,
                  dashboard_controller: DashboardController,
                  scanner_controller: ScannerController,
-                 auth_controller: AuthController) -> None:
+                 auth_controller: AuthController,
+                 version_controller: VersionController) -> None:
         
         self._window: Window | None = None
         
@@ -33,6 +34,7 @@ class API:
         self.dashboard = dashboard_controller
         self.scanner = scanner_controller
         self.auth = auth_controller
+        self.version = version_controller
     
     # Private
     def _setWindow(self, window_instance: Window) -> None:
