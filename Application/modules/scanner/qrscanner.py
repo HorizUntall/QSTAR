@@ -21,10 +21,24 @@ class QRCodeScanner:
         self.frame_counter: int = 0
 
     def capture_frames(self):
-        if self.cap is None:
-            self.cap = cv2.VideoCapture(self.vidSrc)
+        # if self.cap is None:
+        #     self.cap = cv2.VideoCapture(self.vidSrc, cv2.CAP_DSHOW)
 
         while self.running:
+
+            if self.cap is None:
+                time.sleep(0.5)
+                test_cap = cv2.VideoCapture(self.vidSrc, cv2.CAP_DSHOW)
+
+                # Check if OpenCV managed to open the physical hardware
+                if test_cap.isOpened():
+                    self.cap = test_cap
+                else:
+                    test_cap.release()
+                    self.frame_bytes = None
+                    time.sleep(0.5)
+                    continue
+
             if not self.update_frames:
                 time.sleep(0.1)
                 continue
@@ -33,6 +47,7 @@ class QRCodeScanner:
                 success, img = self.cap.read()
 
                 if not success: 
+                    self.frame_bytes = None
                     time.sleep(0.01)
                     continue
 
@@ -63,6 +78,19 @@ class QRCodeScanner:
         if self.frame_bytes:
             return self.frame_bytes.decode('utf-8')
         return ""
+    
+    def change_camera(self, cam_id) -> None:
+        self.vidSrc = cam_id
+        
+        if self.cap is not None:
+            old_cap = self.cap
+            self.cap = None
+            old_cap.release()
+
+        self.frame_bytes = None
+
+    def get_camera_id(self) -> int:
+        return self.vidSrc
 
     def start_scanning(self) -> None:
         if not self.running:

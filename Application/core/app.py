@@ -64,7 +64,7 @@ class QSTARApp:
 
         self.web_dir = self.root_dir / "web"
         self.indexPage = self.web_dir / "index.html"
-        self.qrscanner = QRCodeScanner(vidSrc=2)
+        self.qrscanner = QRCodeScanner()
         self.window: webview.Window | None = None
 
         """For Dev Mode Hot Reloading"""

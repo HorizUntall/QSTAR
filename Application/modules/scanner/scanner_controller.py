@@ -43,3 +43,12 @@ class ScannerController:
     # Public
     def resume_camera(self) -> None:
         self._scanner.start_scanning()
+
+    # Public
+    def change_camera(self, cam_id) -> None:
+        if cam_id < 0 or cam_id > 5: return
+        self._scanner.change_camera(cam_id)
+
+    # Public
+    def get_cam_id(self) -> int:
+        return self._scanner.get_camera_id()
