@@ -114,34 +114,21 @@ class AppLauncher:
                 progress_bar.start(12)
                 loader.update_idletasks()
 
-                # --- SAFE OVERWRITE HANDLING ---
-                # Delete the old engine core executable first to ensure it's unblocked
-                # if self.main_app_exe.exists():
-                #     try:
-                #         os.remove(self.main_app_exe)
-                #     except Exception:
-                #         pass # Ignore if Windows is delaying file handle disposal
-
                 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                    # Look inside the zip file to see what files are inside it
                     zipped_file_list = zip_ref.namelist()
                     
-                    # ONLY delete the old core engine file if the incoming update actually contains a new one!
+                    # Clean up the old engine executable only if a new one is arriving
                     if "QSTAR_Engine.exe" in zipped_file_list:
                         if self.main_app_exe.exists():
                             try:
                                 os.remove(self.main_app_exe)
                             except Exception:
                                 pass
-                    
-                    # Extract the update package cleanly over your application directory
+                                
+                    # Extract the update package cleanly ONCE
                     zip_ref.extractall(self.install_dir)
 
-                # Extract update package directly over the current running directory layout.
-                # ZipFile automatically overwrites existing files inside _internal/ smoothly.
-                with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                    zip_ref.extractall(self.install_dir)
-                
+                # Safely delete the update file
                 try:
                     os.remove(zip_path)
                 except Exception:
@@ -169,7 +156,12 @@ class AppLauncher:
             else:
                 messagebox.showerror("Error", "QSTAR_Engine.exe could not be found in the current directory.")
         else:
-            subprocess.Popen([sys.executable, str(self.main_app_exe)])
+            # subprocess.Popen([sys.executable, str(self.main_app_exe)])
+            # Use CREATE_NEW_PROCESS_GROUP or DETACHED_PROCESS to fully detach the terminal
+            if sys.platform == "win32":
+                subprocess.Popen([sys.executable, str(self.main_app_exe)], creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
+            else:
+                subprocess.Popen([sys.executable, str(self.main_app_exe)])
         sys.exit(0)
 
 if __name__ == "__main__":
