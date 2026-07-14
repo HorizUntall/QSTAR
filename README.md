@@ -1,4 +1,4 @@
-# Q-STAR (v2.0.0)
+# Q-STAR (v2)
 
 ### QR-Based Student and Teacher Attendance Recorder
 
