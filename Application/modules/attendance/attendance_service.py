@@ -1,5 +1,5 @@
 from typing import Dict, Any, Tuple
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # from modules.shared.code_validate_and_parse import validate_and_parse
 from core.exceptions import NotFoundException, UserNotRegisteredException
@@ -15,6 +15,11 @@ from modules.faculty.faculty_repo import FacultyRepository
 
 from modules.attendance.attendance_models import ProcessedAttendanceResult
 from modules.attendance.attendance_repo import AttendanceRepository
+
+import logging
+from threading import Thread
+
+logger = logging.getLogger()
 
 class AttendanceService:
     def __init__(self, attendance_repo: AttendanceRepository, student_repo: StudentRepository, faculty_repo: FacultyRepository) -> None:
@@ -91,8 +96,9 @@ class AttendanceService:
                 }
             )
         
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        today_date = datetime.now().strftime("%Y-%m-%d")
+        now = datetime.now()
+        current_time = now.strftime("%Y-%m-%d %H:%M:%S")
+        today_date = now.strftime("%Y-%m-%d")
         
         # Find the current active log where log out is null
         recordId = self.attendance_repo.find_active_in_record(user_id=user.id, date_prefix=today_date)
@@ -103,7 +109,11 @@ class AttendanceService:
         # If recordId is None, try to find the previous log
         # and check if the current log is within X minutes as the previous log out.
         # This will overwrite the previous logout
-        recordId = self.attendance_repo.find_recent_out_record(user_id=user.id, cutoff_time=self.cutoff_time)
+
+        cutoff_dt = now - timedelta(minutes=self.cutoff_time)
+        dynamic_cutoff = cutoff_dt.strftime("%Y-%m-%d %H:%M:%S")
+
+        recordId = self.attendance_repo.find_recent_out_record(user_id=user.id, cutoff_time=dynamic_cutoff)
         if recordId is not None:
             self.attendance_repo.update_time_out(record_id=recordId, time_out=None)
             return ProcessedAttendanceResult(action="overwrite_checkout")
@@ -114,3 +124,18 @@ class AttendanceService:
         
     def get_today_attendance(self) -> list[Dict[str, Any]]:
         return self.attendance_repo.get_today_attendance()
+
+    def run_stale_records_cleanup(self) -> None:
+        """Spawns an isolated background worker thread to process daily auto-timeouts."""
+        def worker():
+            try:
+                logger.info("AttendanceService: Executing system maintenance database check...")
+                count = self.attendance_repo.auto_timeout_previous_days()
+                if count > 0:
+                    logger.info(f"AttendanceService: Force closed {count} stale active records from previous days at 17:00:00.")
+            except Exception as err:
+                logger.error(f"AttendanceService Lifecycle Error: Maintenance execution thread failed: {err}")
+
+        # Execute as a daemon process so it instantly yields control if the UI window is killed
+        maintenance_worker = Thread(target=worker, daemon=True)
+        maintenance_worker.start()

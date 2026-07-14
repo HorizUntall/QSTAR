@@ -31,10 +31,25 @@ class AppLauncher:
         except Exception:
             return "2.0.0"
 
+    def _unblock_directory(self):
+        """Recursively removes the Windows Mark of the Web (Zone.Identifier) from all files."""
+        if sys.platform == "win32":
+            for root_dir, _, files in os.walk(str(self.install_dir)):
+                for file in files:
+                    try:
+                        zone_id = f"{Path(root_dir) / file}:Zone.Identifier"
+                        if os.path.exists(zone_id):
+                            os.remove(zone_id)
+                    except Exception:
+                        pass
+
     def execute_pipeline(self):
         # Create a hidden base Tkinter window to host native system dialog boxes safely
         root = tk.Tk()
         root.withdraw()
+
+        # FIX 1: Sweep the directory on boot just in case the initial manual extract was blocked
+        self._unblock_directory()
 
         # 1. Connection Verification
         try:
@@ -117,7 +132,6 @@ class AppLauncher:
                 with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                     zipped_file_list = zip_ref.namelist()
                     
-                    # Clean up the old engine executable only if a new one is arriving
                     if "QSTAR_Engine.exe" in zipped_file_list:
                         if self.main_app_exe.exists():
                             try:
@@ -127,6 +141,11 @@ class AppLauncher:
                                 
                     # Extract the update package cleanly ONCE
                     zip_ref.extractall(self.install_dir)
+
+                # FIX 2: Clear the web block stream immediately from all newly extracted files
+                status_lbl.config(text="Applying system security clearance...")
+                loader.update_idletasks()
+                self._unblock_directory()
 
                 # Safely delete the update file
                 try:
@@ -149,15 +168,12 @@ class AppLauncher:
         loader.mainloop()
 
     def launch_engine(self):
-        # Spawn our standalone engine binary and drop launcher context seamlessly
         if getattr(sys, 'frozen', False):
             if self.main_app_exe.exists():
                 subprocess.Popen([str(self.main_app_exe)])
             else:
                 messagebox.showerror("Error", "QSTAR_Engine.exe could not be found in the current directory.")
         else:
-            # subprocess.Popen([sys.executable, str(self.main_app_exe)])
-            # Use CREATE_NEW_PROCESS_GROUP or DETACHED_PROCESS to fully detach the terminal
             if sys.platform == "win32":
                 subprocess.Popen([sys.executable, str(self.main_app_exe)], creationflags=subprocess.CREATE_NEW_PROCESS_GROUP)
             else:

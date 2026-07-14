@@ -48,9 +48,22 @@ class DashboardRepository:
                 params.append(filters.end_date)
 
         if filters.search_name:
-            conditions.append("(u.first_name LIKE ? OR u.last_name LIKE ?)")
-            search_term = f"%{filters.search_name}%"
-            params.extend([search_term, search_term])
+            words = [word.strip() for word in filters.search_name.split() if word.strip()]
+            
+            if words:
+                name_conditions = []
+                for _ in words:
+                    # For every word, we check if it matches first_name, last_name, or their concatenation
+                    name_conditions.append("""
+                        (u.first_name LIKE ? 
+                         OR u.last_name LIKE ? 
+                         OR (u.first_name || ' ' || u.last_name) LIKE ?)
+                    """)
+                    search_term = f"%{_}%"
+                    params.extend([search_term, search_term, search_term])
+                
+                # Combine all word conditions with AND so EVERY word must match somewhere in the name
+                conditions.append("(" + " AND ".join(name_conditions) + ")")
 
         if filters.sex:
             conditions.append("u.sex = ?")
@@ -189,9 +202,20 @@ class DashboardRepository:
         params = []
 
         if filters.search_name:
-            conditions.append("(first_name LIKE ? OR last_name LIKE ?)")
-            search_term = f"%{filters.search_name}%"
-            params.extend([search_term, search_term])
+            words = [word.strip() for word in filters.search_name.split() if word.strip()]
+            
+            if words:
+                name_conditions = []
+                for _ in words:
+                    name_conditions.append("""
+                        (first_name LIKE ? 
+                         OR last_name LIKE ? 
+                         OR (first_name || ' ' || last_name) LIKE ?)
+                    """)
+                    search_term = f"%{_}%"
+                    params.extend([search_term, search_term, search_term])
+                
+                conditions.append("(" + " AND ".join(name_conditions) + ")")
         if filters.sex:
             conditions.append("sex = ?")
             params.append(filters.sex.upper())

@@ -78,7 +78,8 @@ app-homepage {
   }
 
   /* Soft Pastels */
-  .status-overlay.flash-check-in {
+  .status-overlay.flash-check-in,
+  .status-overlay.flash-overwrite-check-out {
     background-color: rgba(212, 239, 216, 0.45); /* Soft Pastel Mint Green */
   }
   .status-overlay.flash-check-out {

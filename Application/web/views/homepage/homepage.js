@@ -50,11 +50,17 @@ class HomepageComponent extends HTMLElement {
               "Successfully Checked In!",
               "check-in",
             );
-          } else {
+          } else if (response.action === "check_out") {
             this.showNotification(
               "Success",
               "Successfully Checked Out!",
               "check-out",
+            );
+          } else {
+            this.showNotification(
+              "Success",
+              "Successfully Overwrote Previous Check-Out!",
+              "overwrite-check-out",
             );
           }
 
@@ -101,6 +107,9 @@ class HomepageComponent extends HTMLElement {
       modal.classList.add("modal-success");
     } else if (type === "check-out") {
       overlay.classList.add("flash-check-out");
+      modal.classList.add("modal-info");
+    } else if (type === "overwrite-check-out") {
+      overlay.classList.add("flash-overwrite-check-out");
       modal.classList.add("modal-info");
     } else if (type === "error") {
       modal.classList.add("modal-error");

@@ -9,7 +9,6 @@ import webview
 
 # Core 
 from core.database.database import init_db, get_db 
-from core.log.logger import setup_logger
 from core import version
 
 from core.renderer.asset_service import AssetResolverService
@@ -135,6 +134,15 @@ class QSTARApp:
             auth_controller=self.auth_controller,
             version_controller=self.version_controller
         )
+
+        self.on_application_bootstrap()
+
+    def on_application_bootstrap(self) -> None:
+        """
+        Fires domain specific maintenance routines 
+        asynchronously right after all modules are registered, ensuring zero UI boot latency.
+        """
+        self.attendance_service.run_stale_records_cleanup()
 
     def on_closing(self):
         print("Closing...")

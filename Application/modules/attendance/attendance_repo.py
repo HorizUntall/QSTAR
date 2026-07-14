@@ -67,3 +67,20 @@ class AttendanceRepository:
 
         columns = [col[0] for col in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+    def auto_timeout_previous_days(self) -> int:
+        """
+        Finds all entries from previous days where time_out is NULL,
+        and sets their time_out to 5:00 PM (17:00:00) of their respective time_in date.
+        """
+        cursor = self.conn.cursor()
+        # This SQL splits the time_in string to get just the date part (YYYY-MM-DD),
+        # appends ' 17:00:00', and updates the record if it's strictly before today.
+        cursor.execute("""
+            UPDATE attendance 
+            SET time_out = SUBSTR(time_in, 1, 10) || ' 17:00:00'
+            WHERE time_out IS NULL 
+              AND SUBSTR(time_in, 1, 10) < DATE('now', 'localtime')
+        """)
+        self.conn.commit()
+        return cursor.rowcount
