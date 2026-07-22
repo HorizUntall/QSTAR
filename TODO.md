@@ -2,13 +2,10 @@
 
 ## Progress
 
-- [x] About Page
-- [x] Dashboard Page
-- [x] Homepage Page
-- [x] Settings Page
-- [x] Security
-- [ ] Show version on frontend
+- [ ] Fix Logging
+- [/] Secure Config
+- [/] Implement Settings Update password
+- [ ] Check for bugs
+- [ ] Baldy Easter Egg1
 
 ## Features Needed to be Added
-
-- [ ] Handle entries with forgotten time-outs

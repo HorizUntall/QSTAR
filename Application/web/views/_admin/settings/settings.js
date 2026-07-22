@@ -103,6 +103,16 @@ class SettingsViewComponent extends HTMLElement {
     this.querySelector("#saveFacultyChangesBtn").addEventListener("click", () =>
       this.handleSaveFacultyInfo(),
     );
+
+    // Action Trigger: Change Email Submission
+    this.querySelector("#submitEmailBtn").addEventListener("click", () =>
+      this.handleChangeEmail(),
+    );
+
+    // Action Trigger: Change Email Password Submission
+    this.querySelector("#submitEmailPassBtn").addEventListener("click", () =>
+      this.handleChangeEmailPassword(),
+    );
   }
 
   // --- BACKEND WRAPPER INTERFACES ---
@@ -143,6 +153,63 @@ class SettingsViewComponent extends HTMLElement {
         alert(
           "Unexpected communication breakdown via python bridge runtime ecosystem.",
         );
+      }
+    }
+  }
+
+  // Email Update API Implementation
+  async handleChangeEmail() {
+    const email = this.querySelector("#new-email-input").value.trim();
+
+    if (!email) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    if (confirm("Are you sure you want to change the email address?")) {
+      try {
+        const response = await window.pywebview.api.email.change_email(email);
+        if (response && response.status === "success") {
+          alert("Email updated successfully");
+          this.closeModal("modal-change-email");
+          this.clearInputs(["new-email-input"]);
+        } else {
+          alert(
+            `Failed: ${response?.message || "Invalid or bad email format."}`,
+          );
+        }
+      } catch (error) {
+        console.error("Error updating email:", error);
+        alert("Unexpected error occurred while communicating with backend.");
+      }
+    }
+  }
+
+  // Email Password Update API Implementation
+  async handleChangeEmailPassword() {
+    const emailPass = this.querySelector("#new-email-password-input").value;
+
+    if (!emailPass) {
+      alert("Please enter the new email password.");
+      return;
+    }
+
+    if (confirm("Are you sure you want to change the email password?")) {
+      try {
+        const response =
+          await window.pywebview.api.email.change_email_pass(emailPass);
+        if (response && response.status === "success") {
+          alert("Email password updated successfully");
+          this.closeModal("modal-change-email-pass");
+          this.clearInputs(["new-email-password-input"]);
+        } else {
+          alert(
+            `Failed: ${response?.message || "Error updating email password."}`,
+          );
+        }
+      } catch (error) {
+        console.error("Error updating email password:", error);
+        alert("Unexpected error occurred while communicating with backend.");
       }
     }
   }
@@ -302,6 +369,7 @@ class SettingsViewComponent extends HTMLElement {
         <div class="sidebar">
             <div class="sidebar-nav-group">
                 <button class="tab active" data-tab="content-general">General</button>
+                <button class="tab" data-tab="content-email">Email Settings</button>
                 <button class="tab" data-tab="content-faculties">Manage Faculty Accounts</button>
             </div>
             <button id="returnToDashboardButton">Return to Dashboard</button>
@@ -374,6 +442,52 @@ class SettingsViewComponent extends HTMLElement {
                             </select>
                             <button class="saveButton" id="save-student-details-changes-btn">Save Changes</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-email" class="tab-content">
+                <h2 class="tab-header">Email Settings</h2>
+                
+                <button class="category-button" id="triggerChangeEmailBtn" onclick="document.querySelector('app-settings').openModal('modal-change-email')">
+                    <div class="category-text-container">
+                        <h5 class="category-header">Change Email Address</h5>
+                        <label class="category-subheader">Update the system email address used for outgoing communications</label>
+                    </div>
+                    <div class="button-sign">&#9654</div>
+                </button>
+
+                <button class="category-button" id="triggerChangeEmailPassBtn" onclick="document.querySelector('app-settings').openModal('modal-change-email-pass')">
+                    <div class="category-text-container">
+                        <h5 class="category-header">Change Email Password <br>[DO NOT CHANGE UNLESS INSTRUCTED]</h5>
+                        <label class="category-subheader">Update the password/app-password used for system email authentication</label>
+                    </div>
+                    <div class="button-sign">&#9654</div>
+                </button>
+
+                <div class="modal" id="modal-change-email">
+                    <div class="modal-content">
+                        <button class="close-button">&#128937</button>
+                        <h3 class="modal-header">Change Email Address</h3>
+                        <label class="modal-subheader">Update the email address associated with system dispatching</label>
+                        <div class="password-inputs">
+                            <label>New Email Address</label>
+                            <input id="new-email-input" type="email">
+                        </div>
+                        <button class="saveButton" id="submitEmailBtn">Submit</button>
+                    </div>
+                </div>
+
+                <div class="modal" id="modal-change-email-pass">
+                    <div class="modal-content">
+                        <button class="close-button">&#128937</button>
+                        <h3 class="modal-header">Change Email Password</h3>
+                        <label class="modal-subheader">Update the password for system email authentication</label>
+                        <div class="password-inputs">
+                            <label>New Email Password</label>
+                            <input id="new-email-password-input" type="password">
+                        </div>
+                        <button class="saveButton" id="submitEmailPassBtn">Submit</button>
                     </div>
                 </div>
             </div>

@@ -1,13 +1,16 @@
 import smtplib
+from core.config.config import get_data, change_data
 from email.message import EmailMessage
 
 class EmailService:
     @staticmethod
     def send_export_email(recipient_email: str, excel_bytes: bytes, pdf_bytes: bytes) -> None:
+        """Sends email"""
         SMTP_SERVER = "smtp.gmail.com" 
         SMTP_PORT = 587
-        SENDER_EMAIL = "qstarlibraryzrc@gmail.com"
-        SENDER_PASSWORD = "owll nqwi cbew jhhq" 
+        SENDER_EMAIL = get_data("email")
+        SENDER_PASSWORD = get_data("email_pass")
+
 
         # 1. Build the modern message structure
         msg = EmailMessage()
@@ -43,3 +46,11 @@ class EmailService:
             server.starttls()  # Secure the connection explicitly
             server.login(SENDER_EMAIL, SENDER_PASSWORD)
             server.send_message(msg)
+
+    def change_email(self, email: str) -> None:
+        """Change email account"""
+        change_data("email", email)
+
+    def change_email_pass(self, email_pass: str) -> None:
+        """Change email password"""
+        change_data("email_pass", email_pass)

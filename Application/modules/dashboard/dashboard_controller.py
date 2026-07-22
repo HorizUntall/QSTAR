@@ -9,9 +9,14 @@ from modules.dashboard.dashboard_service import DashboardService
 from modules.export.export_service import ExportService
 from modules.email.email_service import EmailService
 
+import logging
+
+logger = logging.getLogger()
+
 class DashboardController:
-    def __init__(self, dashboard_service: DashboardService) -> None:
+    def __init__(self, dashboard_service: DashboardService, email_service: EmailService) -> None:
         self._service = dashboard_service
+        self._email_service = email_service
 
     # Public
     @admin_required
@@ -140,7 +145,7 @@ class DashboardController:
                 if not target_email:
                     return {"status": "error", "message": "Email address is required."}
                 
-                EmailService.send_export_email(target_email, excel_bytes, pdf_bytes)
+                self._email_service.send_export_email(target_email, excel_bytes, pdf_bytes)
                 return {"status": "success", "message": "Email sent successfully."}
 
             elif export_method == 'local':
@@ -171,4 +176,5 @@ class DashboardController:
 
         except Exception as e:
             # Catching generic errors to prevent pywebview from silently crashing on bridge failures
-            return {"status": "error", "message": f"Export failed: {str(e)}"}
+            logger.error(f"Export failed: {str(e)}")
+            return {"status": "error", "message": f"Export failed"}

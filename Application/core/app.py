@@ -40,6 +40,9 @@ from modules.dashboard.dashboard_repo import DashboardRepository
 from modules.dashboard.dashboard_service import DashboardService
 from modules.dashboard.dashboard_controller import DashboardController
 
+from modules.email.email_service import EmailService
+from modules.email.email_controller import EmailController
+
 from modules.scanner.qrscanner import QRCodeScanner
 from modules.scanner.scanner_controller import ScannerController
 
@@ -101,10 +104,15 @@ class QSTARApp:
                                         faculty_service=self.faculty_service)
         self.user_controller = UserController(user_service=self.user_service)
 
+        # Email Module
+        self.email_service = EmailService()
+        self.email_controller = EmailController(email_service=self.email_service)
+
         # Dashboard Module
         self.dashboard_repo = DashboardRepository(db_conn=db_conn)
         self.dashboard_service = DashboardService(dashboard_repo=self.dashboard_repo)
-        self.dashboard_controller = DashboardController(dashboard_service=self.dashboard_service)
+        self.dashboard_controller = DashboardController(dashboard_service=self.dashboard_service,
+                                                        email_service=self.email_service)
 
         # Auth Module
         self.auth_service = AuthService()
@@ -132,7 +140,8 @@ class QSTARApp:
             dashboard_controller=self.dashboard_controller,
             scanner_controller=self.scanner_controller,
             auth_controller=self.auth_controller,
-            version_controller=self.version_controller
+            version_controller=self.version_controller,
+            email_controller=self.email_controller
         )
 
         self.on_application_bootstrap()

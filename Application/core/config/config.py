@@ -4,7 +4,9 @@ import logging
 from pathlib import Path
 from typing import Dict, Any
 import os
+import copy
 from datetime import datetime
+from core.config.encrypt import encrypt_data, decrypt_data
 
 CONFIG_PATH = Path("C:/QSTAR/Data/config.json")
 
@@ -15,10 +17,11 @@ DEFAULT_CONFIG_BLUEPRINT = {
     "scrypt_n": 16384,
     "scrypt_r": 8,
     "scrypt_p": 1,
+    "email": None,
+    "email_pass": None,
     "last_updated": None
 }
 
-# 1. In-memory cache to avoid reading from the hard drive every single second
 _config_cache: Dict[str, Any] = {}
 
 def _generate_initial_config() -> Dict[str, Any]:
@@ -41,8 +44,9 @@ def _generate_initial_config() -> Dict[str, Any]:
     return config
 
 def _serialize_config(config_dict: Dict[str, Any]) -> Dict[str, Any]:
-    """Converts bytes and datetimes to JSON-serializable types."""
-    serialized = config_dict.copy()
+    """Converts bytes, datetimes, and plain-text secrets into JSON-serializable types."""
+    # serialized = config_dict.copy()
+    serialized = copy.deepcopy(config_dict)
     
     if isinstance(serialized.get("admin_key"), bytes):
         serialized["admin_key"] = serialized["admin_key"].hex()
@@ -52,7 +56,19 @@ def _serialize_config(config_dict: Dict[str, Any]) -> Dict[str, Any]:
         
     if isinstance(serialized.get("last_updated"), datetime):
         serialized["last_updated"] = serialized["last_updated"].isoformat()
-        
+
+    # Safely handle email_pass encryption
+    email_pass = serialized.get("email_pass")
+    if email_pass:
+        if isinstance(email_pass, str):
+            # Convert string to bytes before encrypting
+            email_pass = email_pass.encode('utf-8')
+            
+        # if isinstance(email_pass, bytes):
+            # Only encrypt if it's raw bytes (plain text)
+        encrypted_bytes = encrypt_data(email_pass)
+        serialized["email_pass"] = encrypted_bytes.hex()
+
     return serialized
 
 def _deserialize_config(config_dict: Dict[str, Any]) -> Dict[str, Any]:
@@ -71,12 +87,21 @@ def _deserialize_config(config_dict: Dict[str, Any]) -> Dict[str, Any]:
         except ValueError:
             pass
 
+    if "email_pass" in deserialized and isinstance(deserialized["email_pass"], str):
+        try:
+            encrypted_bytes = bytes.fromhex(deserialized["email_pass"])
+            decrypted_bytes = decrypt_data(encrypted_bytes)
+            # Store back as plain text string in memory
+            deserialized["email_pass"] = decrypted_bytes.decode('utf-8')
+        except Exception:
+            logging.exception("Failed to decrypt email_pass with DPAPI.")
+            deserialized["email_pass"] = None
+
     return deserialized
 
 def _load_config() -> Dict[str, Any]:
     global _config_cache
     
-    # Return cache if we already read it during this run loop
     if _config_cache:
         return _config_cache
 
@@ -93,8 +118,6 @@ def _load_config() -> Dict[str, Any]:
             return _config_cache
     except Exception:
         logging.exception("Failed reading config file. Raising error to prevent password overwrites.")
-        # 2. CRITICAL: Do NOT auto-generate a new password salt if the file merely has a syntax error! 
-        # Raise an exception so the application safely stops instead of locking users out.
         raise RuntimeError("Configuration file is corrupted. Fix or backup and delete to reset.")
 
 def _save_config_file(config: Dict[str, Any]) -> None:
@@ -103,7 +126,6 @@ def _save_config_file(config: Dict[str, Any]) -> None:
     try:
         with open(temp_path, "w") as f:
             json.dump(_serialize_config(config), f, indent=4)
-        # Atomic replacement: prevents half-written files if power cuts or app crashes
         temp_path.replace(CONFIG_PATH)
     except Exception:
         if temp_path.is_file():
@@ -115,7 +137,11 @@ def get_data(key: str) -> Any:
     return config.get(key)
 
 def change_data(key: str, val: Any) -> None:
+    global _config_cache
     config = _load_config()
     config[key] = val
     config["last_updated"] = datetime.now()
     _save_config_file(config)
+    
+    # Update entire cache so timestamps and keys are in 100% sync
+    _config_cache = config

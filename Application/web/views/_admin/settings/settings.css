@@ -186,7 +186,9 @@ app-settings {
 
   #old-password,
   #new-password,
-  #new-password-confirmation {
+  #new-password-confirmation,
+  #new-email-input,
+  #new-email-password-input {
     width: 100%;
     max-width: 350px;
     height: 35px;
