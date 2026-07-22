@@ -3,6 +3,7 @@ import "../../components/navbar/navbar.js";
 import "../../components/camerafeed/camerafeed.js";
 import "../../components/clock/clock.js";
 import "../../components/todayTable/todayTable.js";
+import "../../components/bugreport/bugreport.js";
 
 class HomepageComponent extends HTMLElement {
   constructor() {
@@ -168,6 +169,9 @@ class HomepageComponent extends HTMLElement {
         <app-camerafeed></app-camerafeed>
         <app-clock></app-clock>
       </div>
+
+      <!-- 2. Embedded Bug Report Component -->
+      <app-bugreport></app-bugreport>
     </main> `;
   }
 }

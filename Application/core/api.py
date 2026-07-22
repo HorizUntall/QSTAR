@@ -12,6 +12,7 @@ from modules.scanner.scanner_controller import ScannerController
 from modules.auth.auth_controller import AuthController
 from modules.version.version_controller import VersionController
 from modules.email.email_controller import EmailController
+from modules.bug_report.bug_report_controller import BugReportController
 
 class API:
     def __init__(self,
@@ -24,7 +25,8 @@ class API:
                  scanner_controller: ScannerController,
                  auth_controller: AuthController,
                  version_controller: VersionController,
-                 email_controller: EmailController) -> None:
+                 email_controller: EmailController,
+                 bug_report_controller: BugReportController) -> None:
         
         self._window: Window | None = None
         
@@ -38,6 +40,7 @@ class API:
         self.auth = auth_controller
         self.version = version_controller
         self.email = email_controller
+        self.bug_report = bug_report_controller
     
     # Private
     def _setWindow(self, window_instance: Window) -> None:

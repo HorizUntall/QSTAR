@@ -1,0 +1,135 @@
+app-bugreport {
+  display: block;
+  width: 100%;
+
+  .bug-report-trigger {
+    text-align: center;
+    padding: 15px 0 0 0;
+    font-family: sans-serif;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .link-btn {
+    background: none;
+    border: none;
+    color: #4a90e2;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+  }
+
+  .link-btn:hover {
+    color: #2a65b7;
+  }
+
+  /* Overlay */
+  .bug-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .bug-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Card */
+  .bug-modal-card {
+    background: #ffffff;
+    width: 90%;
+    max-width: 480px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    font-family: sans-serif;
+  }
+
+  .bug-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .bug-modal-header h3 {
+    margin: 0;
+    color: #333;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+  }
+
+  .bug-instructions {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: #4a90e2;
+  }
+
+  .bug-status {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    min-height: 1.2em;
+  }
+
+  .bug-status.error {
+    color: #d9534f;
+  }
+  .bug-status.success {
+    color: #5cb85c;
+  }
+
+  .bug-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+
+  .submit-btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+
+  .submit-btn:disabled {
+    background-color: #a0c4f1;
+    cursor: not-allowed;
+  }
+}

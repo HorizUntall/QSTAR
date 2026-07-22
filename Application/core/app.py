@@ -43,6 +43,9 @@ from modules.dashboard.dashboard_controller import DashboardController
 from modules.email.email_service import EmailService
 from modules.email.email_controller import EmailController
 
+from modules.bug_report.bug_report_service import BugReportService
+from modules.bug_report.bug_report_controller import BugReportController
+
 from modules.scanner.qrscanner import QRCodeScanner
 from modules.scanner.scanner_controller import ScannerController
 
@@ -114,6 +117,10 @@ class QSTARApp:
         self.dashboard_controller = DashboardController(dashboard_service=self.dashboard_service,
                                                         email_service=self.email_service)
 
+        # Bug Report Module
+        self.bug_report_service = BugReportService(email_service=self.email_service)
+        self.bug_report_controller = BugReportController(bug_report_service=self.bug_report_service)
+
         # Auth Module
         self.auth_service = AuthService()
         self.auth_controller = AuthController(auth_service=self.auth_service)
@@ -141,7 +148,8 @@ class QSTARApp:
             scanner_controller=self.scanner_controller,
             auth_controller=self.auth_controller,
             version_controller=self.version_controller,
-            email_controller=self.email_controller
+            email_controller=self.email_controller,
+            bug_report_controller = self.bug_report_controller
         )
 
         self.on_application_bootstrap()
