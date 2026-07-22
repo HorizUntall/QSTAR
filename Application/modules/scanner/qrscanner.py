@@ -5,7 +5,9 @@ from threading import Thread, Timer, Event
 from pyzbar.pyzbar import decode
 import base64
 from typing import Callable
-import webview
+import logging
+
+logger = logging.getLogger()
 
 class QRCodeScanner:
     def __init__(self, scan_interval: int = 10, vidSrc: int = 0) -> None:
@@ -70,7 +72,7 @@ class QRCodeScanner:
                                 self.handleScan(decoded_data)
 
                 except Exception as e:
-                    logging.error("Error in qrscanner.py loop", exc_info=True)
+                    logger.error("Error in qrscanner.py loop", exc_info=True)
 
             time.sleep(0.01)
 

@@ -1,9 +1,12 @@
 from typing import List, Dict, Any
+import logging
 
 from core.exceptions import BadRequestException, UserNotRegisteredException
 
 from modules.attendance.attendance_service import AttendanceService
 from modules.attendance.attendance_models import ProcessedAttendanceResult
+
+logger = logging.getLogger()
 
 class AttendanceController:
     def __init__(self, attendance_service: AttendanceService) -> None:
@@ -23,7 +26,8 @@ class AttendanceController:
             }
         
         except Exception as e:
-            return {"status": "error", "message": f"Error occured while retrieving today logs: {e}"}
+            logger.exception(f"Error occured while retrieving today logs at attendance_controller: {e}")
+            return {"status": "error", "message": f"Error occured while retrieving today logs"}
     
     # Public
     def processScannedCode(self, qr_data: str) -> Dict[str, Any]:
@@ -52,4 +56,5 @@ class AttendanceController:
             }
         
         except Exception as e:
+            logger.exception(f"Exception occured in processedScannedCode at attendance_controller: {e}")
             return {"status": "error", "message": "An unexpected system error occured."}

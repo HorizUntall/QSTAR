@@ -1,9 +1,12 @@
 from typing import Dict, Any, List
+import logging
 
 from core.exceptions import BridgeException
 
 from modules.faculty.faculty_service import FacultyService
 from modules.faculty.faculty_models import FacultyDTO
+
+logger = logging.getLogger()
 
 class FacultyController:
     def __init__(self, faculty_service: FacultyService) -> None:
@@ -85,7 +88,8 @@ class FacultyController:
             }
         
         except Exception as e:
+            logger.exception(f"Error occured while retrieving all faculties: {e}")
             return {
                 "status": "error",
-                "message": f"Error occured while retrieving all faculties: {e}"
+                "message": f"Error occured while retrieving all faculties"
             }

@@ -1,4 +1,5 @@
 from typing import Dict, Any
+import logging
 
 from core.exceptions import BridgeException
 
@@ -10,6 +11,8 @@ from modules.faculty.faculty_models import FacultyDTO
 
 from modules.user.user_models import UserDTO
 from modules.user.user_service import UserService
+
+logger = logging.getLogger()
 
 class UserController:
     def __init__(self, user_service: UserService) -> None:
@@ -38,4 +41,11 @@ class UserController:
                 "status": e.status,
                 "message": e.message,
                 "meta": e.meta
+            }
+
+        except Exception as e:
+            logger.exception(f"Exception occured while registering student: {str(e)}")
+            return {
+                "status": "error",
+                "message": "Unexpected error occurred."
             }

@@ -1,9 +1,12 @@
 from typing import Dict, Any
+import logging
 
 from core.exceptions import BridgeException
 
 from modules.student.student_service import StudentService
 from modules.student.student_models import StudentDTO
+
+logger = logging.getLogger()
 
 class StudentController:
     def __init__(self, student_service: StudentService) -> None:
@@ -75,7 +78,8 @@ class StudentController:
             }
         
         except Exception as e:
+            logger.exception(f"Exception occured in updating student: {str(e)}")
             return {
                 "status": "error",
-                "message": f"Unexpected error occured: {e}"
+                "message": f"Unexpected error occured"
             }
