@@ -2,11 +2,11 @@
 
 ## Progress
 
-- [ ] Fix Logging
+- [/] Fix Logging
 - [/] Secure Config
 - [/] Implement Settings Update password
 - [ ] Implement Report Bugs
-- [ ] Update Navbar
+- [/] Update Navbar
 - [ ] Check for bugs
 - [ ] Baldy Easter Egg1
 

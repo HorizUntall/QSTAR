@@ -23,10 +23,9 @@ class NavbarComponent extends HTMLElement {
 
   layout() {
     return /*html*/ `
-
-        <nav>
+      <nav>
         <div class="nav-left">
-          <h1>Q-STAR</h1>
+          <h1>Q-STAR <span class="version-tag">v2.0</span></h1>
           <h2>QR-Based Student and Teacher Attendance Recorder</h2>
         </div>
 
@@ -38,7 +37,7 @@ class NavbarComponent extends HTMLElement {
           </ul>
         </div>
       </nav>
-        `;
+    `;
   }
 }
 
